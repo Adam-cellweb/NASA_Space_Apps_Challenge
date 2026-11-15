@@ -116,6 +116,7 @@ html[dir="rtl"] .brand-text span { letter-spacing: 0; }
   border-radius: var(--r-sm); color: #fff; text-decoration: none; font-size: 13px; font-weight: 550;
   border: 1px solid transparent;
 }
+button.tool-link { background: none; cursor: pointer; font: inherit; }
 .tool-link:hover { background: rgba(255, 255, 255, .14); }
 .tool-link.ghost { border-color: rgba(255, 255, 255, .28); }
 

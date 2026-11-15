@@ -84,7 +84,17 @@
     "share": "Copy link",
     "copied": "Link copied",
     "play": "Play the six periods",
-    "pause": "Pause"
+    "pause": "Pause",
+    "view_2d": "2D map",
+    "view_3d": "3D globe",
+    "globe_loading": "Loading the globe…",
+    "globe_note": "Height shows the size of the number. Taller means further short of water.",
+    "globe_hint": "Drag to turn the globe, scroll to zoom, hold Ctrl and drag to tilt. Tap a block for its numbers.",
+    "globe_failed": "The globe could not start on this device. The 2D map has the same data.",
+    "height_deficit": "Height: water deficit",
+    "height_cropland": "Height: cropland",
+    "open_2d": "Open in the 2D map",
+    "reset_view": "Reset view"
   },
   "ur": {
     "app_title": "کے پی اوپن فارم اٹلس",
@@ -170,7 +180,17 @@
     "share": "لنک کاپی کریں",
     "copied": "لنک کاپی ہو گیا",
     "play": "چھ ادوار چلائیں",
-    "pause": "روکیں"
+    "pause": "روکیں",
+    "view_2d": "2D نقشہ",
+    "view_3d": "3D کرہ",
+    "globe_loading": "کرہ لوڈ ہو رہا ہے…",
+    "globe_note": "اونچائی عدد کی مقدار ظاہر کرتی ہے۔ زیادہ اونچا یعنی پانی کی زیادہ کمی۔",
+    "globe_hint": "کرہ گھمانے کے لیے گھسیٹیں، زوم کے لیے اسکرول کریں، جھکانے کے لیے Ctrl دبا کر گھسیٹیں۔ اعداد کے لیے بلاک پر ٹیپ کریں۔",
+    "globe_failed": "اس ڈیوائس پر کرہ نہیں چل سکا۔ 2D نقشے میں وہی ڈیٹا موجود ہے۔",
+    "height_deficit": "اونچائی: پانی کی کمی",
+    "height_cropland": "اونچائی: زرعی زمین",
+    "open_2d": "2D نقشے میں کھولیں",
+    "reset_view": "منظر بحال کریں"
   },
   "ps": {
     "app_title": "کې پي اوپن فارم اټلس",
@@ -256,6 +276,16 @@
     "share": "لینک کاپي کړئ",
     "copied": "لینک کاپي شو",
     "play": "شپږ مودې چلول",
-    "pause": "ودرول"
+    "pause": "ودرول",
+    "view_2d": "2D نقشه",
+    "view_3d": "3D کره",
+    "globe_loading": "کره لوډېږي…",
+    "globe_note": "لوړوالی د شمېرې اندازه ښیي. لوړ یعنې د اوبو ډېر کمښت.",
+    "globe_hint": "د کرې څرخولو لپاره راکاږئ، لویولو لپاره سکرول کړئ، د ټیټولو لپاره Ctrl ونیسئ او راکاږئ. د شمېرو لپاره بلاک ټچ کړئ.",
+    "globe_failed": "په دې وسیله کې کره پیل نشوه. 2D نقشه هماغه ډېټا لري.",
+    "height_deficit": "لوړوالی: د اوبو کمښت",
+    "height_cropland": "لوړوالی: کرنیزه ځمکه",
+    "open_2d": "په 2D نقشه کې پرانیزئ",
+    "reset_view": "کتنه بیا تنظیمول"
   }
 }

@@ -205,6 +205,7 @@ def main():
         print(f"water demand: FAO-56 Penman-Monteith from NASA POWER ({wapor_note})")
 
     generated_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+    matrix = {}
     series_dir = os.path.join(out, "series")
     os.makedirs(series_dir, exist_ok=True)
     for old in os.listdir(series_dir):
@@ -266,6 +267,7 @@ def main():
                   "et_mm": latest["et_mm"], "rain_mm": latest["rain_mm"],
                   "centroid": [round(lon, 4), round(lat, 4)]})
         key = "uc_id" if "uc_id" in p else "district_id"
+        matrix[k] = {"d": [r["deficit_mm"] for r in rows], "s": [r["status"][0] for r in rows]}
         dump_json(os.path.join(series_dir, f"{k}.json"), {
             key: k, "name_en": p.get("uc_name_en") or p["name_en"], "district_id": p["district_id"],
             "dekads": rows, "hectares": ha, "et_method": et_method, "status_basis": status_basis,
@@ -291,6 +293,14 @@ def main():
     dump_json(os.path.join(out, "ucs", "all.geojson"),
               {"type": "FeatureCollection", "generated_at": generated_at,
                "features": [f for feats in ucs.values() for f in feats]}, compact=True)
+
+    # one small file with every unit's six values, so the website can switch periods
+    # with a single request instead of one per unit
+    dump_json(os.path.join(out, "matrix.json"), {
+        "generated_at": generated_at,
+        "dekads": [{"start": s.isoformat(), "end": e.isoformat()} for s, e in dekads],
+        "legend": {"g": "green", "a": "amber", "r": "red", "n": "nodata"},
+        "units": matrix}, compact=True)
 
     census = {}
     cpath = os.path.join(HERE, "census_2024.csv")

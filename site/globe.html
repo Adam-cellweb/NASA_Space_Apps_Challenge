@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b3d91">
+  <meta name="description" content="The KP Open Farm Atlas on a 3D globe: every union council raised by how much water its crops went short of in the last ten days.">
+  <title>3D globe · KP Open Farm Atlas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/globe.css">
+</head>
+<body class="globe-page">
+  <header class="top">
+    <a class="brand" href="./">
+      <span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="#i-satellite"/></svg></span>
+      <span class="brand-text">
+        <b data-i18n="app_title">KP Open Farm Atlas</b>
+        <span data-i18n="app_tagline">NASA Space Apps Challenge 2026</span>
+      </span>
+    </a>
+    <div class="toolbar">
+      <label class="field">
+        <svg class="icon icon-sm" aria-hidden="true"><use href="#i-calendar"/></svg>
+        <select id="dekadSelect" aria-label="Ten-day period"></select>
+      </label>
+      <label class="field">
+        <svg class="icon icon-sm" aria-hidden="true"><use href="#i-layers"/></svg>
+        <select id="heightSelect" aria-label="Height shows"></select>
+      </label>
+      <button class="tool-link" id="resetView" type="button">
+        <svg class="icon icon-sm" aria-hidden="true"><use href="#i-refresh"/></svg><span data-i18n="reset_view">Reset view</span>
+      </button>
+      <a class="tool-link ghost" href="./">
+        <svg class="icon icon-sm" aria-hidden="true"><use href="#i-map"/></svg><span data-i18n="view_2d">2D map</span>
+      </a>
+    </div>
+  </header>
+
+  <div class="stage">
+    <div id="globe"></div>
+    <div class="loading" id="loading"><span class="spinner"></span><span data-i18n="globe_loading">Loading the globe…</span></div>
+    <div class="legend globe-legend" id="legend"></div>
+    <aside class="globe-card" id="card" hidden></aside>
+    <div class="globe-hint" id="hint"></div>
+  </div>
+
+  <footer class="foot">
+    <span id="footGenerated"></span>
+    <span class="sep">·</span>
+    <span id="footSources"></span>
+  </footer>
+
+  <script src="js/icons.js"></script>
+  <script>window.CESIUM_BASE_URL = 'https://cdn.jsdelivr.net/npm/cesium@1.125.0/Build/Cesium/';</script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cesium@1.125.0/Build/Cesium/Widgets/widgets.css">
+  <script src="https://cdn.jsdelivr.net/npm/cesium@1.125.0/Build/Cesium/Cesium.js"></script>
+  <script src="js/globe.js"></script>
+</body>
+</html>

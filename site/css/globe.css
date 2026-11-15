@@ -1,0 +1,50 @@
+/* The 3D view. Dark chrome, because the globe is dark. */
+.globe-page { background: #05080f; }
+.globe-page .stage { background: #05080f; }
+#globe { position: absolute; inset: 0; }
+#globe .cesium-widget-credits { display: none !important; }
+.cesium-viewer-bottom { display: none !important; }
+
+.globe-page .foot { background: #0a1020; border-top-color: #16203a; color: #8da0bd; }
+.globe-page .foot a { color: #8da0bd; }
+
+.globe-legend {
+  background: rgba(10, 16, 32, .92); border-color: #1d2947; color: #e7edf7;
+}
+.globe-legend .legend-head b { color: #fff; }
+.globe-legend .legend-head .icon { color: #7fa6ef; }
+.globe-legend .legend-body { border-top-color: #1d2947; }
+.globe-legend .legend-note { border-top-color: #22304f; color: #93a4c2; }
+
+.globe-card {
+  position: absolute; right: 14px; top: 14px; width: 332px; max-width: calc(100% - 28px); z-index: 600;
+  background: rgba(10, 16, 32, .95); border: 1px solid #1d2947; border-radius: var(--r-lg);
+  color: #e7edf7; box-shadow: 0 10px 40px rgba(0, 0, 0, .5); overflow: hidden;
+}
+html[dir="rtl"] .globe-card { right: auto; left: 14px; }
+.globe-card .bar { height: 5px; }
+.globe-card .body { padding: 14px 16px 16px; }
+.globe-card h2 { margin: 0; font-size: 19px; font-weight: 670; letter-spacing: -.01em; }
+.globe-card .sub { margin: 2px 0 10px; font-size: 12.5px; color: #93a4c2; }
+.globe-card .big { font-size: 32px; font-weight: 700; line-height: 1; }
+.globe-card .big small { font-size: 13px; font-weight: 500; color: #93a4c2; }
+.globe-card .rows { display: flex; gap: 10px; margin-top: 12px; }
+.globe-card .rows div { flex: 1; min-width: 0; background: rgba(255, 255, 255, .05); border-radius: var(--r-md); padding: 9px 10px; }
+.globe-card .rows .k { font-size: 11px; color: #93a4c2; }
+.globe-card .rows .v { margin-top: 4px; font-size: 16px; font-weight: 650; }
+.globe-card .close { position: absolute; top: 10px; inset-inline-end: 10px; background: none; border: 0; color: #93a4c2; cursor: pointer; display: flex; }
+.globe-card .open-2d { display: inline-flex; align-items: center; gap: 6px; margin-top: 13px; font-size: 13px; font-weight: 600; color: #8ab4ff; text-decoration: none; }
+
+.globe-hint {
+  position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 500;
+  background: rgba(10, 16, 32, .86); border: 1px solid #1d2947; color: #c3d0e6;
+  padding: 7px 14px; border-radius: var(--r-pill); font-size: 12.5px; white-space: nowrap;
+}
+.globe-page .loading { background: rgba(10, 16, 32, .95); border-color: #1d2947; color: #e7edf7; }
+.globe-page .spinner { border-color: #26324f; border-top-color: #7fa6ef; }
+
+@media (max-width: 820px) {
+  .globe-card { right: 10px; left: 10px; width: auto; top: auto; bottom: 58px; }
+  .globe-hint { display: none; }
+  .globe-legend { bottom: 10px; left: 10px; width: 206px; }
+}

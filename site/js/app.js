@@ -24,7 +24,7 @@
     level: 'province', districtId: null, ucId: null,
     dekadIndex: null, layer: 'status', query: '', detail: false, playing: false
   };
-  var meta = null, strings = {}, districts = null;
+  var meta = null, strings = {}, districts = null, matrix = null;
   var ucCache = {}, seriesCache = {};
   var map, districtLayer = null, ucLayer = null, plotlyPromise = null, firstFit = true;
   var baseLayers = {}, labelOverlay = null, activeBase = localStorage.getItem('atlas.base') || 'light';
@@ -359,11 +359,22 @@
     return breaks;
   }
 
+  var STATUS_LETTER = { g: 'green', a: 'amber', r: 'red', n: 'nodata' };
+  function loadMatrix() {
+    if (!matrix) matrix = getJSON('matrix.json').catch(function () { return null; });
+    return matrix;
+  }
+  // One 16 KB file holds every unit's six values, so switching period costs one
+  // request rather than one per unit.
   function statusesFor(features, idKey) {
     if (isLatest()) return Promise.resolve(null);
-    return Promise.all(features.map(function (f) { return series(f.properties[idKey]); })).then(function (all) {
+    return loadMatrix().then(function (m) {
       var out = {};
-      all.forEach(function (s, i) { out[features[i].properties[idKey]] = dekadAt(s, state.dekadIndex).status; });
+      features.forEach(function (f) {
+        var id = f.properties[idKey];
+        var row = m && m.units && m.units[id];
+        out[id] = row ? (STATUS_LETTER[row.s[state.dekadIndex]] || 'nodata') : 'nodata';
+      });
       return out;
     });
   }
@@ -472,14 +483,17 @@
   }
 
   function provinceTrend(node) {
-    Promise.all(districts.features.map(function (f) { return series(f.properties.district_id); }))
-      .then(function (all) {
+    loadMatrix()
+      .then(function (m) {
         var counts = meta.dekads.map(function () { return { green: 0, amber: 0, red: 0, nodata: 0 }; });
         var got = 0;
-        all.forEach(function (ser) {
-          if (!ser || !ser.dekads) return;
+        districts.features.forEach(function (f) {
+          var r = m && m.units && m.units[f.properties.district_id];
+          if (!r) return;
           got++;
-          ser.dekads.forEach(function (d, i) { if (counts[i]) counts[i][d.status]++; });
+          r.s.forEach(function (letter, i) {
+            if (counts[i]) counts[i][STATUS_LETTER[letter] || 'nodata']++;
+          });
         });
         if (!got) { node.replaceWith(el('p', { 'class': 'hint', text: t('no_series') })); return; }
         var x = meta.dekads.map(function (d) { return fmtDate(d.start); });
@@ -681,10 +695,12 @@
   }
   // a small arrow next to the value: did this unit get drier or wetter?
   function movement(id, row) {
-    series(id).then(function (ser) {
-      if (!ser || !ser.dekads || state.dekadIndex < 1) return;
-      var now = ser.dekads[state.dekadIndex], prev = ser.dekads[state.dekadIndex - 1];
-      if (!now || !prev || now.deficit_mm == null || prev.deficit_mm == null) return;
+    if (state.dekadIndex < 1) return;
+    loadMatrix().then(function (m) {
+      var r = m && m.units && m.units[id];
+      if (!r) return;
+      var now = { deficit_mm: r.d[state.dekadIndex] }, prev = { deficit_mm: r.d[state.dekadIndex - 1] };
+      if (now.deficit_mm == null || prev.deficit_mm == null) return;
       var diff = now.deficit_mm - prev.deficit_mm;
       if (Math.abs(diff) < 1) return;
       var val = row.querySelector('.val');

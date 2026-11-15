@@ -26,6 +26,7 @@ import time
 import numpy as np
 import rasterio
 import requests
+from requests.exceptions import RequestException
 from rasterio.features import rasterize
 from rasterio.warp import transform_geom
 from rasterio.windows import from_bounds
@@ -127,6 +128,22 @@ def stats_for_raster(path, layers, totals, seen_values):
                 totals[uid] = totals.get(uid, 0.0) + float((np.broadcast_to(area, arr.shape)[hit]).sum())
 
 
+def write_csv(results, units):
+    """Write whatever has been counted so far. Columns still missing stay blank,
+    which build_series.py reports as not connected rather than as zero."""
+    columns = [c for c, _ in PRODUCTS]
+    done = [c for c in columns if any(c in r for r in results.values())]
+    with open(OUT, "w", newline="", encoding="utf-8") as fh:
+        w = csv.writer(fh)
+        w.writerow(["id"] + done + ["source"])
+        for uid, _ in units:
+            row = results.get(uid)
+            if not row:
+                continue
+            w.writerow([uid] + [row.get(c, "") for c in done] + ["ESA WorldCereal 2021 v100"])
+    print(f"  wrote {OUT}: {len(results)} units, columns {done}", flush=True)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--keep", action="store_true", help="keep the streamed zone rasters")
@@ -138,12 +155,42 @@ def main():
     print(f"{len(units)} units, zones covering them: {zones}")
     os.makedirs(CACHE, exist_ok=True)
 
+    def ckpt_path(column):
+        return os.path.join(CACHE, f"partial_{column}.json")
+
+    def load_ckpt(column):
+        path = ckpt_path(column)
+        if not os.path.exists(path):
+            return {"zones": [], "totals": {}}
+        with open(path, encoding="utf-8") as fh:
+            return json.load(fh)
+
+    def save_ckpt(column, state):
+        with open(ckpt_path(column), "w", encoding="utf-8") as fh:
+            json.dump(state, fh)
+
+    def with_retries(fn, what, tries=5):
+        delay = 10
+        for attempt in range(1, tries + 1):
+            try:
+                return fn()
+            except (RequestException, OSError) as exc:
+                if attempt == tries:
+                    raise
+                print(f"    {what}: {type(exc).__name__}, retry {attempt}/{tries - 1} "
+                      f"in {delay}s", file=sys.stderr, flush=True)
+                time.sleep(delay)
+                delay = min(120, delay * 2)
+
     results = {}
     for column, key in PRODUCTS:
         print(f"\n=== {column}  ({key})")
         url = ZEN.format(key=key)
+        state = load_ckpt(column)
+        if state["zones"]:
+            print(f"  resuming: {len(state['zones'])} zone(s) already counted")
         try:
-            z, fh = open_index(url)
+            z, fh = with_retries(lambda: open_index(url), "index")
         except Exception as exc:  # noqa: BLE001
             print(f"  archive unreachable: {str(exc)[:90]}", file=sys.stderr)
             continue
@@ -153,8 +200,12 @@ def main():
             if m and int(m.group(1)) in zones:
                 members[int(m.group(1))] = info
         print(f"  {len(members)}/{len(zones)} zones present in this archive")
-        totals, seen = {}, set()
+        totals = {k: float(v) for k, v in state["totals"].items()}
+        seen = set()
         for zone, info in sorted(members.items()):
+            if zone in state["zones"]:
+                print(f"  zone {zone}: already counted, skipping")
+                continue
             tif = os.path.join(CACHE, f"{column}_{zone}.tif")
             if not os.path.exists(tif):
                 mb = info.compress_size / 1e6
@@ -168,29 +219,26 @@ def main():
                               f"{done / 1e6 / max(0.1, time.time() - t0):.1f} MB/s", flush=True)
 
                 print(f"  zone {zone}: streaming {mb:.0f} MB compressed", flush=True)
-                extract_member(url, info, tif, fh=fh, progress=progress)
+                with_retries(lambda: extract_member(url, info, tif, fh=fh, progress=progress),
+                             f"zone {zone}")
                 print(f"  zone {zone}: inflated to {os.path.getsize(tif) / 1e6:.0f} MB "
                       f"in {time.time() - t0:.0f}s", flush=True)
             stats_for_raster(tif, layers, totals, seen)
-            print(f"  zone {zone}: {sum(totals.values()):,.0f} ha so far", flush=True)
+            state["zones"].append(zone)
+            state["totals"] = totals
+            save_ckpt(column, state)
+            print(f"  zone {zone}: {sum(totals.values()):,.0f} ha so far (checkpointed)", flush=True)
             if not args.keep:
                 os.remove(tif)
-        print(f"  raster values seen: {sorted(seen)}")
+        if seen:
+            print(f"  raster values seen: {sorted(seen)}")
         for uid, v in totals.items():
             results.setdefault(uid, {})[column] = int(round(v))
+        write_csv(results, units)
 
     if not results:
         sys.exit("no products could be read")
-    columns = [c for c, _ in PRODUCTS]
-    with open(OUT, "w", newline="", encoding="utf-8") as fh:
-        w = csv.writer(fh)
-        w.writerow(["id"] + columns + ["source"])
-        for uid, _ in units:
-            row = results.get(uid)
-            if not row:
-                continue
-            w.writerow([uid] + [row.get(c, 0) for c in columns] + ["ESA WorldCereal 2021 v100"])
-    print(f"\nwrote {OUT}: {len(results)}/{len(units)} units")
+    write_csv(results, units)
 
 
 if __name__ == "__main__":
