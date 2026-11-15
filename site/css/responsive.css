@@ -27,7 +27,7 @@
   .field { padding: 0 6px; gap: 4px; }
   .field > .icon { display: none; }
   .toolbar { gap: 6px; }
-  .stage { display: block; }
+  .stage { display: block; grid-template-columns: none; }
   #map { position: absolute; inset: 0; }
   .panel { position: absolute; inset: 0; width: auto; z-index: 700; border: 0; }
   .panel-inner { padding: 12px 15px 96px; }

@@ -85,7 +85,14 @@ html[dir="rtl"] .brand-text span { letter-spacing: 0; }
 .tool-link.ghost { border-color: var(--on-chrome-line); }
 
 /* ---------------------------------------------------------------- stage */
-.stage { position: relative; flex: 1; min-height: 0; display: flex; overflow: hidden; }
+/* Two explicit columns rather than flex sizing: the panel column is declared, so
+   the map can never push it off the screen no matter what the map contains. */
+.stage {
+  position: relative; flex: 1; min-height: 0; overflow: hidden;
+  display: grid; grid-template-columns: minmax(0, 1fr) var(--panel-w); align-items: stretch;
+}
+/* before the first render the panel is empty, so the map takes the whole stage */
+.stage:has(> .panel:empty) { grid-template-columns: minmax(0, 1fr); }
 #map {
   flex: 1; min-width: 0; background-color: #e3e8f0;
   background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
@@ -175,7 +182,7 @@ html[dir="rtl"] .legend { left: auto; right: 14px; }
 
 /* ---------------------------------------------------------------- panel */
 .panel {
-  width: var(--panel-w); max-width: 100%; flex: none; background: var(--surface);
+  width: auto; min-width: 0; max-width: 100%; background: var(--surface);
   border-inline-start: 1px solid var(--line); overflow-y: auto; overscroll-behavior: contain;
 }
 .panel:empty { display: none; }
