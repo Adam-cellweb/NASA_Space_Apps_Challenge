@@ -31,7 +31,7 @@
   #map { position: absolute; inset: 0; }
   .panel { position: absolute; inset: 0; width: auto; z-index: 700; border: 0; }
   .panel-inner { padding: 12px 15px 96px; }
-  .map-toggle { display: inline-flex; }
+  .map-toggle { display: inline-flex; bottom: 34px; }
   body.show-map .panel { display: none; }
   body:not(.show-map) .leaflet-control-container { display: none; }
   .legend { width: 232px; left: 10px; bottom: 76px; }
@@ -54,7 +54,7 @@
   .doc table { display: block; overflow-x: auto; white-space: nowrap; }
   .doc td, .doc th { white-space: normal; min-width: 108px; }
   #scatter { height: 340px; }
-  .chart { height: 250px; }
+  .chart { min-height: 250px; }
   /* comfortable touch targets */
   .list li { padding: 12px 4px; }
   .chip { padding: 9px 13px; }

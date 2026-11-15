@@ -470,8 +470,8 @@
         loadPlotly().then(function () {
           Plotly.newPlot(node, [bar('red', COLORS.red), bar('amber', COLORS.amber),
                                 bar('green', COLORS.green), bar('nodata', COLORS.nodata)], {
-            barmode: 'stack', height: 180, margin: { l: 30, r: 8, t: 4, b: 26 },
-            legend: { orientation: 'h', y: 1.3, x: 0, font: { size: 10 } },
+            barmode: 'stack', height: 230, margin: { l: 30, r: 8, t: 6, b: 82 },
+            legend: { orientation: 'h', x: 0, y: -0.22, yanchor: 'top', font: { size: 10 } },
             yaxis: { gridcolor: '#eef1f6', fixedrange: true },
             xaxis: { tickfont: { size: 10 }, fixedrange: true },
             paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
@@ -813,6 +813,7 @@
   function renderChart(node, ser) {
     if (!ser) { node.replaceWith(el('p', { 'class': 'hint', text: t('no_series') })); return; }
     var x = ser.dekads.map(function (d) { return fmtDate(d.start); });
+    var narrow = (node.clientWidth || window.innerWidth) < 420;
     loadPlotly().then(function () {
       Plotly.newPlot(node, [
         { type: 'bar', name: t('et'), x: x, y: ser.dekads.map(function (d) { return d.et_mm; }),
@@ -824,13 +825,13 @@
           line: { color: '#c2250f', width: 2 }, marker: { size: 6 },
           hovertemplate: '%{y:.1f} mm<extra>' + t('deficit') + '</extra>' }
     ].concat(baselineOn() && ser.dekads.some(function (d) { return d.normal_mm != null; }) ? [
-        { type: 'scatter', mode: 'lines', name: t('normal_line', { from: meta.baseline.first_year, to: meta.baseline.last_year }),
+        { type: 'scatter', mode: 'lines', name: narrow ? t('normal_short') : t('normal_line', { from: meta.baseline.first_year, to: meta.baseline.last_year }),
           x: x, y: ser.dekads.map(function (d) { return d.normal_mm; }),
           line: { color: '#6b7280', width: 1.6, dash: 'dot' }, connectgaps: false,
           hovertemplate: '%{y:.1f} mm<extra>' + t('normal_short') + '</extra>' }
       ] : []), {
-        barmode: 'group', height: 236, margin: { l: 38, r: 10, t: 6, b: 30 },
-        legend: { orientation: 'h', y: 1.18, x: 0, font: { size: 11 } },
+        barmode: 'group', height: narrow ? 330 : 280, margin: { l: 38, r: 10, t: 8, b: narrow ? 108 : 80 },
+        legend: { orientation: 'h', x: 0, y: -0.2, yanchor: 'top', font: { size: narrow ? 10 : 11 } },
         yaxis: { title: { text: t('mm'), font: { size: 11 } }, gridcolor: '#eef1f6', zerolinecolor: '#cbd5e1' },
         xaxis: { tickfont: { size: 10 } }, hovermode: 'x unified',
         paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',

@@ -14,7 +14,12 @@ Atlas.components.legend = (function () {
   var storageKey = Atlas.config.legendStorageKey;
 
   var open = (function () {
-    try { return localStorage.getItem(storageKey) !== 'closed'; } catch (e) { return true; }
+    // on phones the legend starts collapsed so it does not cover the map; a stored choice wins
+    var phone = window.innerWidth <= (Atlas.config.breakpoints ? Atlas.config.breakpoints.mobile : 820);
+    try {
+      var saved = localStorage.getItem(storageKey);
+      return saved ? saved !== 'closed' : !phone;
+    } catch (e) { return !phone; }
   })();
 
   function icon(n, c) { return window.atlasIcon(n, c); }

@@ -85,6 +85,8 @@ html[dir="rtl"] .brand-text span { letter-spacing: 0; }
 .leaflet-tooltip b { font-weight: 650; }
 .leaflet-tooltip .tt-sub { color: var(--muted); font-weight: 500; }
 .leaflet-control-zoom a { color: var(--ink) !important; }
+.leaflet-control-attribution { font-size: 10px; line-height: 1.4; padding: 1px 6px; }
+.leaflet-control-scale-line { font-size: 10px; }
 .leaflet-bar { border: 1px solid var(--line) !important; box-shadow: var(--shadow-1) !important; }
 
 .loading {
