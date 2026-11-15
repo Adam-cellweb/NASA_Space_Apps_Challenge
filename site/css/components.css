@@ -3,13 +3,13 @@
 
 /* status card */
 .status-card { margin: 14px 0 0; border-radius: var(--r-lg); overflow: hidden; border: 1px solid var(--line); }
-.status-bar { height: 5px; }
+.status-bar { height: 2px; }
 .status-bar.green { background: var(--green); } .status-bar.amber { background: var(--amber); }
 .status-bar.red { background: var(--red); } .status-bar.nodata { background: var(--nodata); }
 .status-body { padding: 13px 15px 15px; background: var(--surface-2); }
 .status-tag {
   display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700;
-  letter-spacing: .06em; text-transform: uppercase; padding: 3px 9px; border-radius: var(--r-pill); color: #fff;
+  letter-spacing: .06em; text-transform: uppercase; padding: 3px 8px; border-radius: var(--r-sm); color: #fff;
 }
 html[dir="rtl"] .status-tag { letter-spacing: 0; }
 .status-tag.green { background: var(--green); } .status-tag.amber { background: var(--amber); }
@@ -212,3 +212,49 @@ figure.diagram figcaption { margin-top: 10px; font-size: 12.5px; color: var(--mu
 .headline { margin: 12px 0 0; padding: 10px 12px; border-inline-start: 3px solid var(--line); background: var(--surface-2, #f5f7fa);
   border-radius: 4px; font-size: 13px; line-height: 1.5; color: var(--ink-2); }
 .headline[hidden] { display: none; }
+
+
+/* ================================================================ Orbital Agricultural Observatory
+   Design pass from new_ui/DESIGN.md: instrument labels, tabular telemetry, planar surfaces. */
+.status-card, .stat, .balance, .card, .key { box-shadow: none; }
+.status-card { border-top: 0; background: var(--surface); }
+.status-big .v { font-size: 34px; font-weight: 600; letter-spacing: .02em; font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1, "cv05" 1; }
+.stat { border-top: 2px solid var(--line); }
+.stat .k, .balance .k {
+  font-size: var(--label); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted);
+}
+html[dir="rtl"] .stat .k, html[dir="rtl"] .balance .k { letter-spacing: 0; }
+.stat .v, .balance .v, .list .val, .chart-table td { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1, "cv05" 1; }
+.stat .v { font-size: 22px; font-weight: 600; }
+.stat.empty { border-top-color: var(--nodata); background: repeating-linear-gradient(135deg, transparent 0 6px, rgba(148, 163, 184, .13) 6px 7px), var(--surface); }
+.stat.empty .v { color: var(--muted); }
+.chip {
+  font-size: var(--label); font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+  padding: 7px 11px; border-radius: var(--r-md);
+}
+html[dir="rtl"] .chip { letter-spacing: 0; }
+.chip.on { background: var(--nasa-blue-900); border-color: var(--nasa-blue-900); }
+.chip:disabled { background: repeating-linear-gradient(135deg, transparent 0 6px, rgba(148, 163, 184, .16) 6px 7px), var(--surface-2); }
+.btn { text-transform: uppercase; letter-spacing: .06em; font-size: var(--label); }
+html[dir="rtl"] .btn { letter-spacing: 0; }
+.panel-inner { padding: 18px 24px 32px; }
+.panel h1 { color: var(--nasa-blue-900); font-weight: 700; }
+.panel .sub, .crumbs { font-size: 12px; }
+.sources .src b { color: var(--nasa-blue-900); }
+.foot { font-size: 12px; padding: 0 24px; gap: 16px; }
+.foot span:first-child { color: var(--ink-2); font-weight: 600; font-variant-numeric: tabular-nums; }
+.notice { border-radius: var(--r-md); }
+.legend-row b, .legend-head b { font-variant-numeric: tabular-nums; }
+.sw.nodata, .sw[data-status="nodata"] { background-image: repeating-linear-gradient(45deg, rgba(255,255,255,.7) 0 2px, transparent 2px 5px); }
+
+/* floating sensor HUD: the real map extent, in tabular type */
+.hud {
+  position: absolute; top: 14px; left: 14px; z-index: 500; display: flex; flex-direction: column; gap: 4px;
+  pointer-events: none; font-size: var(--label); font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+}
+html[dir="rtl"] .hud { left: auto; right: 14px; letter-spacing: 0; }
+.hud span {
+  padding: 5px 9px; border-radius: var(--r-sm); background: var(--hud); color: #fff;
+  border: 1px solid #0a3278; backdrop-filter: blur(8px); font-variant-numeric: tabular-nums;
+}
+.hud span:last-child { background: rgba(255, 255, 255, .92); color: var(--ink-2); border-color: var(--line); }

@@ -16,6 +16,7 @@
   --line: #e1e6ed;
   --line-2: #eef1f6;
   --paper: #f4f6f9;
+  --label: 11px;
   --surface: #ffffff;
   --surface-2: #f8fafc;
 
@@ -26,14 +27,17 @@
   --demand: #0b3d91;
   --rain: #7c93ad;
 
-  --r-sm: 6px; --r-md: 10px; --r-lg: 14px; --r-pill: 999px;
+  /* Orbital Agricultural Observatory: machined 4px modules, 2px spec-plate badges, no pills */
+  --r-sm: 2px; --r-md: 4px; --r-lg: 4px; --r-pill: 2px;
   --sp: 4px;
-  --header-h: 58px;
-  --footer-h: 32px;
+  --header-h: 64px;
+  --footer-h: 36px;
   --panel-w: 416px;
-  --shadow-1: 0 1px 2px rgba(15, 23, 42, .06), 0 1px 3px rgba(15, 23, 42, .08);
-  --shadow-2: 0 4px 16px rgba(15, 23, 42, .10), 0 1px 3px rgba(15, 23, 42, .06);
-  --focus: 0 0 0 3px rgba(11, 61, 145, .28);
+  --shadow-1: 0 1px 3px rgba(6, 31, 77, .08), 0 8px 16px -4px rgba(6, 31, 77, .06);
+  --shadow-2: 0 1px 3px rgba(6, 31, 77, .08), 0 8px 16px -4px rgba(6, 31, 77, .06);
+  --hud: rgba(6, 31, 77, .9);
+  --grid: rgba(11, 61, 145, .07);
+  --focus: 0 0 0 2px var(--surface), 0 0 0 4px var(--nasa-blue);
   --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --rtl: "Noto Nastaliq Urdu", "Noto Naskh Arabic", "Segoe UI", Tahoma, sans-serif;
 }

@@ -9,16 +9,17 @@ Status: **Proposed — pending data contract verification and team sign-off** (s
 
 ## 0. What the live site uses today (read this first)
 
-Sections 3 and 4 describe the **intended** crop mask (ESA WorldCereal) and actual-ET source (FAO WaPOR). Those need Earth Engine credentials and are **not connected** in the current public build. The live data (`data/meta.json`, shown in the page header above) uses:
+Section 3 (ESA WorldCereal) is **connected**: hectares come from an Earth Engine export (`pipeline/worldcereal_stats.csv`). Section 4 (FAO WaPOR actual ET) is **not connected** in the current public build because it needs Earth Engine credentials in the build. The live data (`data/meta.json`, shown in the page header above) uses:
 
 | Input | In the live build today | Note |
 |---|---|---|
 | Water demand | FAO-56 Penman-Monteith **reference** ET0, from NASA POWER temperature, humidity, wind, radiation and pressure | Reference ET0 is the demand of a well-watered grass. It is an upper bound on what crops use, so it overstates deficit wherever crops are rainfed, fallow or water-stressed. |
 | Rainfall | NASA POWER `PRECTOTCORR` (MERRA-2, 0.5° × 0.625°) | Coarse; may misrepresent mountain rainfall. |
-| Land the signal applies to | ESA WorldCover 2021 class 40, **all cropland** | Not restricted to irrigated or winter cereals. |
-| Wheat, maize, irrigated area | Not connected; shown as unavailable | Never estimated. |
+| Land the signal applies to | ESA WorldCereal 2021 v100, **irrigated winter cereals** (active irrigation within the winter-cereal season) | One mapped season (2021), statistics at 100 m. Units with no irrigated winter-cereal area show no data, not a status. |
+| Cropland area | ESA WorldCover 2021 class 40 | A different product from WorldCereal, so a cropland figure can be smaller than a winter-cereal figure in some union councils. Both are shown as published, not reconciled. |
+| Wheat, maize, irrigated area | ESA WorldCereal 2021 v100 (`wintercereals`, `maize`, `irrigation` products), hectares per area | Map-based estimates for 2021, not census or survey figures and not farm-level. Not validated against ground data here. |
 
-When Earth Engine credentials are present, `build_series.py` switches to WaPOR actual ET and WorldCereal, and records which it used in `meta.json` and in every series file.
+When Earth Engine credentials are present in the build, `build_series.py` also switches water demand to WaPOR actual ET, and records which method it used in `meta.json` and in every series file.
 
 ### 0.1 Comparison with history (context only)
 
