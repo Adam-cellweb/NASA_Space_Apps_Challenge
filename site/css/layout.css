@@ -1,0 +1,187 @@
+/* Layout layer: the application shell - header, stage, map tools, legend frame,
+   panel frame, footer and documentation-page layout. */
+
+/* ---------------------------------------------------------------- header */
+.top {
+  height: var(--header-h); flex: none; display: flex; align-items: center; gap: 16px;
+  padding: 0 24px; min-width: 0; overflow: hidden; position: relative; z-index: 900;
+  background: var(--surface); color: var(--ink);
+  border-bottom: 1px solid var(--line); box-shadow: var(--shadow-1);
+}
+.brand { display: flex; align-items: center; gap: 12px; color: var(--ink); text-decoration: none; min-width: 0; flex: 0 1 auto; overflow: hidden; }
+.brand-mark {
+  width: 40px; height: 40px; flex: none; display: grid; place-items: center;
+  border-radius: var(--r-md); background: var(--nasa-blue); color: #fff;
+}
+.brand-mark .icon { width: 22px; height: 22px; }
+.brand-text { display: flex; flex-direction: column; min-width: 0; }
+.brand-text b { font-size: 20px; line-height: 24px; font-weight: 700; letter-spacing: -.01em; color: var(--nasa-blue-900); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.brand-text span {
+  font-size: var(--label); line-height: 16px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--muted); white-space: nowrap;
+}
+html[dir="rtl"] .brand-text span { letter-spacing: 0; }
+
+/* primary navigation: segmented instrument switch */
+.nav { display: flex; gap: 2px; padding: 3px; margin-inline-start: 12px; background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-md); }
+.nav a {
+  display: inline-flex; align-items: center; height: 32px; padding: 0 16px; border-radius: var(--r-sm);
+  font-size: 13px; font-weight: 600; letter-spacing: .02em; text-decoration: none; color: var(--ink-2);
+}
+.nav a:hover { background: var(--surface); color: var(--nasa-blue); }
+.nav a[aria-current="page"] { background: var(--nasa-blue); color: #fff; }
+
+.badges { display: flex; gap: 6px; flex: 0 1 auto; min-width: 0; overflow: hidden; }
+.badge {
+  display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+  font-size: var(--label); font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+  padding: 5px 9px; border-radius: var(--r-sm); border: 1px solid var(--line);
+  background: var(--paper); color: var(--ink-2);
+}
+.badge .icon { width: 13px; height: 13px; }
+.badge.demo { background: #fff6e0; border-color: #f2dfae; color: #6b4e09; }
+.badge.offline { background: var(--paper); color: var(--muted); }
+
+.toolbar { margin-inline-start: auto; display: flex; align-items: center; gap: 8px; min-width: 0; flex: 0 0 auto; }
+.field {
+  display: flex; align-items: center; gap: 7px; height: 36px; padding: 0 10px; min-width: 0;
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r-md); color: var(--ink-2);
+}
+.field:focus-within { border-color: var(--nasa-blue); }
+.field .icon { color: var(--nasa-blue); }
+.field select {
+  background: none; border: 0; color: var(--ink); font-size: 13px; font-weight: 500;
+  max-width: 190px; min-width: 0; padding: 0 2px; cursor: pointer; font-variant-numeric: tabular-nums;
+}
+.field select:focus { outline: none; }
+.field .play {
+  display: grid; place-items: center; width: 26px; height: 26px; margin-inline-start: 2px;
+  border: 0; border-radius: var(--r-sm); background: var(--nasa-blue); color: #fff; cursor: pointer;
+}
+.field .play .icon { color: #fff; }
+.field .play:hover { background: var(--nasa-blue-700); }
+.field .play.on { background: var(--nasa-red); }
+.tool-link {
+  display: inline-flex; align-items: center; gap: 7px; height: 36px; padding: 0 12px;
+  border-radius: var(--r-md); color: var(--ink); text-decoration: none; font-size: 13px; font-weight: 600;
+  border: 1px solid var(--line); background: var(--surface);
+}
+.tool-link:hover { background: var(--paper); }
+.tool-link.ghost { border-color: var(--line); }
+
+/* ---------------------------------------------------------------- stage */
+.stage { position: relative; flex: 1; min-height: 0; display: flex; overflow: hidden; }
+#map {
+  flex: 1; min-width: 0; background-color: #e3e8f0;
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+.leaflet-container { font: inherit; background: transparent; }
+.leaflet-tooltip {
+  font: 500 13px/1.35 var(--sans); padding: 6px 9px; border: 1px solid var(--line);
+  border-radius: var(--r-sm); box-shadow: var(--shadow-1); color: var(--ink);
+}
+.leaflet-tooltip b { font-weight: 650; }
+.leaflet-tooltip .tt-sub { color: var(--muted); font-weight: 500; }
+.leaflet-control-zoom a { color: var(--ink) !important; }
+.leaflet-control-attribution { font-size: 10px; line-height: 1.4; padding: 1px 6px; }
+.leaflet-control-scale-line { font-size: 10px; }
+.leaflet-bar { border: 1px solid var(--line) !important; box-shadow: var(--shadow-1) !important; }
+
+.loading {
+  position: absolute; top: 14px; left: 50%; transform: translateX(-50%); z-index: 600;
+  display: flex; align-items: center; gap: 8px;
+  background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow-2);
+  padding: 7px 14px; border-radius: var(--r-pill); font-size: 13px; font-weight: 500;
+}
+.loading[hidden] { display: none; }
+.spinner {
+  width: 13px; height: 13px; border-radius: 50%;
+  border: 2px solid var(--line); border-top-color: var(--nasa-blue);
+  animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 2s; } }
+
+/* ---------------------------------------------------------------- map tools */
+.map-tools { position: absolute; top: 14px; right: calc(var(--panel-w) + 14px); z-index: 500; display: flex; gap: 8px; }
+html[dir="rtl"] .map-tools { right: auto; left: calc(var(--panel-w) + 14px); }
+body.show-map .map-tools, body.no-panel .map-tools { right: 14px; }
+html[dir="rtl"] body.show-map .map-tools { left: 14px; right: auto; }
+.seg, .seg-btn.solo {
+  display: flex; background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r-md); box-shadow: var(--shadow-2); overflow: hidden;
+}
+.seg button, .seg-btn.solo {
+  display: grid; place-items: center; width: 36px; height: 34px; border: 0; background: none;
+  color: var(--muted); cursor: pointer; padding: 0;
+}
+.seg button + button { border-inline-start: 1px solid var(--line-2); }
+.seg button:hover, .seg-btn.solo:hover { background: var(--surface-2); color: var(--ink); }
+.seg button.on, .seg-btn.solo.on { background: var(--nasa-blue); color: #fff; }
+
+.map-label.leaflet-tooltip {
+  background: rgba(255, 255, 255, .88); border: 0; border-radius: 5px; box-shadow: none;
+  padding: 2px 6px; font-size: 11px; line-height: 1.25; color: var(--ink); text-align: center;
+  white-space: nowrap; pointer-events: none;
+}
+.map-label.leaflet-tooltip::before { display: none; }
+.map-label .ml-n { display: block; font-weight: 650; }
+.map-label .ml-v { display: block; font-weight: 500; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.map-label.hover-only { background: #fff; border: 1px solid var(--line); box-shadow: var(--shadow-1); padding: 5px 8px; font-size: 12.5px; }
+body.dark-base .map-label.leaflet-tooltip { background: rgba(12, 18, 28, .78); color: #f1f5f9; }
+body.dark-base .map-label .ml-v { color: #cbd5e1; }
+body.dark-base #map { background: #0d1520; }
+
+/* ---------------------------------------------------------------- legend */
+.legend {
+  position: absolute; left: 14px; bottom: 14px; z-index: 500; width: 262px;
+  background: rgba(255, 255, 255, .97); border: 1px solid var(--line);
+  border-radius: var(--r-md); box-shadow: var(--shadow-2); overflow: hidden;
+}
+html[dir="rtl"] .legend { left: auto; right: 14px; }
+.legend-head {
+  display: flex; align-items: center; gap: 7px; width: 100%; padding: 9px 11px;
+  background: none; border: 0; cursor: pointer; text-align: start;
+}
+.legend-head b { font-size: 12px; font-weight: 650; flex: 1; min-width: 0; }
+.legend-head .icon { color: var(--nasa-blue); }
+.legend-head .caret { margin-inline-start: auto; color: var(--muted); transition: transform .15s; }
+.legend.closed .caret { transform: rotate(90deg); }
+.legend.closed .legend-body { display: none; }
+.legend-body { padding: 2px 11px 11px; border-top: 1px solid var(--line-2); }
+.legend-row { display: flex; align-items: flex-start; gap: 8px; margin-top: 7px; font-size: 12px; }
+.sw { width: 13px; height: 13px; border-radius: 3px; margin-top: 2px; flex: none; box-shadow: inset 0 0 0 1px rgba(0,0,0,.08); }
+.legend-row b { font-weight: 600; }
+.legend-note { margin-top: 9px; padding-top: 8px; border-top: 1px dashed var(--line); color: var(--muted); font-size: 11.5px; }
+.legend-note a { font-weight: 600; }
+.ramp { height: 10px; border-radius: 3px; margin: 8px 0 4px; background: linear-gradient(90deg, #eef4ea, #15803d); }
+.ramp-labels { display: flex; justify-content: space-between; color: var(--muted); font-size: 11px; }
+
+/* ---------------------------------------------------------------- panel */
+.panel {
+  width: var(--panel-w); max-width: 100%; flex: none; background: var(--surface);
+  border-inline-start: 1px solid var(--line); overflow-y: auto; overscroll-behavior: contain;
+}
+.panel:empty { display: none; }
+.panel-inner { padding: 14px 18px 28px; }
+
+.crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 3px; font-size: 12px; color: var(--muted); }
+.crumbs button {
+  display: inline-flex; align-items: center; gap: 4px; background: none; border: 0; padding: 2px 4px;
+  color: var(--nasa-blue); font-weight: 550; cursor: pointer; border-radius: var(--r-sm);
+}
+.crumbs button:hover { background: var(--surface-2); }
+.crumbs .icon { width: 13px; height: 13px; color: var(--muted); }
+.crumbs .here { color: var(--ink-2); font-weight: 550; padding: 2px 2px; }
+
+.title-row { display: flex; align-items: flex-start; gap: 10px; margin: 8px 0 2px; }
+.panel h1 { margin: 0; font-size: 25px; line-height: 1.15; font-weight: 680; letter-spacing: -.02em; }
+.panel .sub { margin: 3px 0 0; color: var(--muted); font-size: 13px; }
+.panel h2 {
+  display: flex; align-items: center; gap: 7px; margin: 22px 0 8px;
+  font-size: 12px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--ink-2);
+}
+html[dir="rtl"] .panel h2 { letter-spacing: 0; }
+.panel h2 .icon { width: 15px; height: 15px; color: var(--nasa-blue); }

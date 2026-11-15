@@ -9,7 +9,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
   <header class="top">
@@ -20,14 +24,11 @@
         <span>NASA Space Apps Challenge 2026</span>
       </span>
     </a>
-    <div class="toolbar">
-      <a class="tool-link" href="guide.html">
-        <svg class="icon icon-sm" aria-hidden="true"><use href="#i-book"/></svg><span>Guide</span>
-      </a>
-      <a class="tool-link ghost" href="./">
-        <svg class="icon icon-sm" aria-hidden="true"><use href="#i-map"/></svg><span>Map</span>
-      </a>
-    </div>
+    <nav class="nav" aria-label="Primary">
+      <a href="./">Atlas</a>
+      <a href="guide.html">Guide</a>
+      <a href="methods.html" aria-current="page">Methods</a>
+    </nav>
   </header>
   <main class="doc-wrap">
     <article class="doc">

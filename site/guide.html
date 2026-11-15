@@ -9,7 +9,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
   <header class="top">
@@ -20,6 +24,12 @@
         <span data-i18n="app_tagline">NASA Space Apps Challenge 2026</span>
       </span>
     </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="./" data-i18n="nav_atlas">Atlas</a>
+      <a href="guide.html" aria-current="page" data-i18n="guide">Guide</a>
+      <a href="methods.html" data-i18n="methods">Methods</a>
+      <a href="globe.html" data-i18n="view_3d">3D globe</a>
+    </nav>
     <div class="toolbar">
       <label class="field">
         <svg class="icon icon-sm" aria-hidden="true"><use href="#i-globe"/></svg>
@@ -29,12 +39,6 @@
           <option value="ps">پښتو</option>
         </select>
       </label>
-      <a class="tool-link" href="methods.html">
-        <svg class="icon icon-sm" aria-hidden="true"><use href="#i-beaker"/></svg><span data-i18n="methods">Methods</span>
-      </a>
-      <a class="tool-link ghost" href="./">
-        <svg class="icon icon-sm" aria-hidden="true"><use href="#i-map"/></svg><span data-i18n="show_map">Map</span>
-      </a>
     </div>
   </header>
   <main class="doc-wrap">

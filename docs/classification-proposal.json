@@ -1,0 +1,225 @@
+{
+  "schema_version": "0.1.0",
+  "project": {
+    "name": "KP Open Farm Atlas",
+    "geography": "Khyber Pakhtunkhwa, Pakistan",
+    "analysis_unit": "union_council",
+    "last_updated": "2026-11-14"
+  },
+  "document_status": "proposed_pending_signoff",
+  "units": {
+    "area": "hectare",
+    "water": "millimetre",
+    "date": "YYYY-MM-DD",
+    "period": "dekad"
+  },
+  "status_values": [
+    "green",
+    "amber",
+    "red",
+    "nodata"
+  ],
+  "analysis_mask": {
+    "description": "Pixels classified as winter cereals that are also classified as irrigated. The classification is undefined outside this mask.",
+    "crop_class": "winter_cereals",
+    "irrigation_class": "irrigated",
+    "source_id": "esa_worldcereal_2021",
+    "verification_status": "project_specified_unverified"
+  },
+  "classification": {
+    "water_deficit": {
+      "rule_id": "water_deficit_traffic_light",
+      "rule_version": "1.0.0-proposed",
+      "status": "proposed_pending_signoff",
+      "formula": "deficit_mm = et_mm - rainfall_mm",
+      "inputs": {
+        "et_mm": {
+          "description": "Area-weighted actual evapotranspiration over the analysis mask for one dekad.",
+          "source_id": "fao_wapor_v3_aet",
+          "unit": "millimetre",
+          "period": "dekad"
+        },
+        "rainfall_mm": {
+          "description": "Daily precipitation summed to the same dekad and aggregated over the same analysis mask.",
+          "source_id": "nasa_power_precipitation",
+          "unit": "millimetre",
+          "period": "dekad"
+        },
+        "area_ha": {
+          "description": "Irrigated winter-cereal area in the union council.",
+          "source_id": "esa_worldcereal_2021",
+          "unit": "hectare"
+        }
+      },
+      "aggregation": {
+        "method": "area_weighted_mean_over_same_mask",
+        "rule": "ET and rainfall must describe the same surface and the same dekad dates. Rainfall must not be averaged over the whole union council while ET is averaged only over crops.",
+        "dekad_alignment_required": true
+      },
+      "thresholds_mm": {
+        "green_upper_inclusive": 0,
+        "amber_lower_exclusive": 0,
+        "amber_upper_exclusive": 30,
+        "red_lower_inclusive": 30
+      },
+      "precedence": [
+        "If irrigated winter-cereal area is null or <= 0, return nodata.",
+        "If et_mm is null or rainfall_mm is null, return nodata.",
+        "If et_mm < 0 or rainfall_mm < 0, return nodata and flag the record as invalid.",
+        "If deficit_mm <= 0, return green.",
+        "If 0 < deficit_mm < 30, return amber.",
+        "If deficit_mm >= 30, return red."
+      ],
+      "rounding": {
+        "compute": "unrounded",
+        "classify": "unrounded",
+        "display_decimals": 1,
+        "rule": "Never reclassify from the rounded display value."
+      },
+      "boundary_note": "Exactly 30.0 mm is red. This resolves the conflict between the initial rule (red > 30) and the later rule (red >= 30).",
+      "clamping": "Do not clamp negative deficit to zero. A negative value means rainfall exceeded actual ET and is classified green."
+    }
+  },
+  "legend": {
+    "title_key": "legend.title",
+    "title_en": "Water deficit (ET − rainfall)",
+    "subtitle_key": "legend.subtitle",
+    "subtitle_en": "Irrigated winter cereals · last ten days",
+    "unit_key": "legend.unit",
+    "unit_en": "mm per dekad",
+    "items": [
+      {
+        "status": "green",
+        "label_key": "legend.green",
+        "label_en": "No deficit",
+        "description_key": "legend.green.description",
+        "description_en": "Rainfall meets or exceeds actual ET over the irrigated winter-cereal area.",
+        "color_token": "status-green"
+      },
+      {
+        "status": "amber",
+        "label_key": "legend.amber",
+        "label_en": "Moderate deficit",
+        "description_key": "legend.amber.description",
+        "description_en": "Actual ET exceeds rainfall by more than 0 mm and less than 30 mm.",
+        "color_token": "status-amber"
+      },
+      {
+        "status": "red",
+        "label_key": "legend.red",
+        "label_en": "Large deficit",
+        "description_key": "legend.red.description",
+        "description_en": "Actual ET exceeds rainfall by 30 mm or more.",
+        "color_token": "status-red"
+      },
+      {
+        "status": "nodata",
+        "label_key": "legend.nodata",
+        "label_en": "No data",
+        "description_key": "legend.nodata.description",
+        "description_en": "No irrigated winter-cereal area, or ET/rainfall is unavailable for this area and period.",
+        "color_token": "status-nodata"
+      }
+    ],
+    "disclaimer_key": "legend.disclaimer",
+    "disclaimer_en": "Area-level screening signal, not a farm-level measurement, forecast or drought warning."
+  },
+  "disclaimers": {
+    "level": "union_council_aggregate",
+    "not_farm_level": true,
+    "not_a_forecast": true,
+    "not_a_drought_warning": true,
+    "actual_et_not_crop_water_requirement": true
+  },
+  "datasets": [
+    {
+      "id": "esa_worldcereal_2021",
+      "name": "ESA WorldCereal 2021",
+      "provider": "European Space Agency",
+      "role": "Crop type and irrigation mask",
+      "product_version": "2021",
+      "verification_status": "project_specified_unverified",
+      "documentation": "docs/methods.md, docs/sources.md"
+    },
+    {
+      "id": "fao_wapor_v3_aet",
+      "name": "FAO WaPOR v3 Actual Evapotranspiration",
+      "provider": "Food and Agriculture Organization of the United Nations",
+      "role": "Dekadal actual evapotranspiration",
+      "product_version": "v3",
+      "verification_status": "project_specified_unverified",
+      "documentation": "docs/methods.md, docs/sources.md"
+    },
+    {
+      "id": "nasa_power_precipitation",
+      "name": "NASA POWER Daily Precipitation",
+      "provider": "NASA",
+      "role": "Daily rainfall aggregated to dekads",
+      "product_version": "daily",
+      "verification_status": "project_specified_unverified",
+      "documentation": "docs/methods.md, docs/sources.md"
+    },
+    {
+      "id": "gadm_4_1",
+      "name": "GADM 4.1 Administrative Boundaries",
+      "provider": "GADM",
+      "role": "District and union council boundaries",
+      "product_version": "4.1",
+      "verification_status": "project_specified_unverified",
+      "documentation": "docs/methods.md, docs/sources.md"
+    },
+    {
+      "id": "pbs_agricultural_census_2024",
+      "name": "Pakistan Agricultural Census 2024",
+      "provider": "Pakistan Bureau of Statistics",
+      "role": "District-level validation reference",
+      "product_version": "2024",
+      "verification_status": "project_specified_unverified",
+      "documentation": "validation/validation_report.md"
+    }
+  ],
+  "quality_gates": {
+    "missing_values": "null_or_absent",
+    "zero_is_valid_measurement": true,
+    "zero_area_forces_nodata": true,
+    "negative_inputs_invalid": true,
+    "rainfall_greater_than_et_is_valid_green": true,
+    "minimum_mask_area_rule": {
+      "status": "pending_team_decision",
+      "note": "A minimum area or pixel count is needed to flag low-confidence aggregates. No value is fixed yet."
+    }
+  },
+  "open_decisions": [
+    {
+      "id": "D-T01",
+      "question": "At exactly 30.0 mm, is the class red or amber?",
+      "recommended": "red (deficit >= 30)",
+      "status": "open",
+      "needed_by": "series generation and legend integration",
+      "owner": "Person 4 with Person 1, Person 2, Person 3 and team lead"
+    },
+    {
+      "id": "D-T02",
+      "question": "What minimum irrigated winter-cereal area or pixel count is required before a UC aggregate is shown without a low-confidence flag?",
+      "recommended": "define after inspecting the actual mask-area distribution",
+      "status": "open",
+      "needed_by": "series generation",
+      "owner": "Person 1 and Person 4"
+    },
+    {
+      "id": "D-T03",
+      "question": "Is maize area an additional validation variable, in addition to cropped area and wheat area?",
+      "recommended": "decide after inspecting the 2024 census table schema",
+      "status": "open",
+      "needed_by": "validation/validation.csv",
+      "owner": "Person 4 and team lead"
+    }
+  ],
+  "change_log": [
+    {
+      "date": "2026-11-14",
+      "version": "1.0.0-proposed",
+      "change": "Created the proposed water-deficit traffic-light rule, legend keys and open decisions. Pending team sign-off."
+    }
+  ]
+}

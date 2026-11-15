@@ -1,8 +1,8 @@
 {
- "generated_at": "2026-11-15T14:20:26Z",
+ "generated_at": "2026-11-15T14:26:52Z",
  "mode": "live",
  "et_method": "fao56_power",
- "status_basis": "cropland",
+ "status_basis": "irrigated winter cereals",
  "latest_dekad": {
   "start": "2026-11-01",
   "end": "2026-11-10"
@@ -74,10 +74,10 @@
   },
   "crop_type": {
    "name": "ESA WorldCereal 2021 v100: winter cereals, maize, active irrigation",
-   "dataset": "ESA/WorldCereal/2021/MODELS/v100 via Earth Engine",
-   "status": "not_connected",
+   "dataset": "ESA/WorldCereal/2021/MODELS/v100 via earth engine export",
+   "status": "live",
    "licence": "CC BY 4.0 (ESA)",
-   "note": "Needs Earth Engine credentials. Until then these hectares are reported as unavailable rather than estimated."
+   "note": null
   },
   "boundaries": {
    "name": "geoBoundaries gbOpen Pakistan ADM2 districts (2019) and ADM3 tehsils (2017)",
@@ -87,14 +87,23 @@
    "note": "Level-3 units are tehsils, not union councils; 31 districts, not 35."
   }
  },
+ "baseline": {
+  "method": "fao56_power",
+  "first_year": 2001,
+  "last_year": 2025,
+  "min_years": 20,
+  "notable_percentile": 90,
+  "notable_note": "Presentation only: the site calls a dekad 'among the driest' at or above this percentile (the driest decile). Pending science sign-off; it is not a classification.",
+  "meaning": "Percentile of this dekad's deficit among the same dekad in the baseline years (0 = wettest on record, 100 = driest), same method and same point. Context only; it does not change the traffic light."
+ },
  "counts": {
   "districts": 31,
   "level3_units": 122,
   "district_status": {
    "green": 1,
-   "amber": 28,
+   "amber": 25,
    "red": 2,
-   "nodata": 0
+   "nodata": 3
   },
   "units_without_weather": 0
  },

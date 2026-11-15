@@ -1,32 +1,32 @@
 district,district_id,census_crop_ha,atlas_crop_ha,census_wheat_ha,atlas_wheat_ha
-Abbottabad,PK.KP.ABB,,11467,,
-Bajaur,PK.KP.BAJ,,47171,,
-Bannu,PK.KP.BAN,,52684,,
-Battagram,PK.KP.BAT,,4071,,
-Buner,PK.KP.BUN,,36332,,
-Charsadda,PK.KP.CHA,,45071,,
-Chitral,PK.KP.CHI,,4454,,
-Dera Ismail Khan,PK.KP.DIK,,353793,,
-Hangu,PK.KP.HAN,,18203,,
-Haripur,PK.KP.HAR,,44352,,
-Karak,PK.KP.KAR,,39472,,
-Khyber,PK.KP.KHY,,19418,,
-Kohat,PK.KP.KOH,,49956,,
-Kohistan,PK.KP.KST,,2461,,
-Kurram,PK.KP.KUR,,26051,,
-Lakki Marwat,PK.KP.LAK,,87329,,
-Lower Dir,PK.KP.LDR,,38676,,
-Malakand,PK.KP.MAL,,20584,,
-Mansehra,PK.KP.MAN,,26373,,
-Mardan,PK.KP.MAR,,73072,,
-Mohmand,PK.KP.MOH,,40368,,
-Nowshera,PK.KP.NOW,,33275,,
-North Waziristan,PK.KP.NWZ,,28875,,
-Orakzai,PK.KP.ORA,,21549,,
-Peshawar,PK.KP.PES,,46188,,
-Shangla,PK.KP.SHA,,2179,,
-Swabi,PK.KP.SWB,,75748,,
-Swat,PK.KP.SWT,,23641,,
-South Waziristan,PK.KP.SWZ,,27310,,
-Tank,PK.KP.TAN,,69786,,
-Upper Dir,PK.KP.UDR,,9273,,
+Abbottabad,PK.KP.ABB,,11467,,2348
+Bajaur,PK.KP.BAJ,,47171,,9961
+Bannu,PK.KP.BAN,,52684,,17487
+Battagram,PK.KP.BAT,,4071,,163
+Buner,PK.KP.BUN,,36332,,14001
+Charsadda,PK.KP.CHA,,45071,,15162
+Chitral,PK.KP.CHI,,4454,,118
+Dera Ismail Khan,PK.KP.DIK,,353793,,94954
+Hangu,PK.KP.HAN,,18203,,1490
+Haripur,PK.KP.HAR,,44352,,21266
+Karak,PK.KP.KAR,,39472,,4041
+Khyber,PK.KP.KHY,,19418,,946
+Kohat,PK.KP.KOH,,49956,,34284
+Kohistan,PK.KP.KST,,2461,,5
+Kurram,PK.KP.KUR,,26051,,1682
+Lakki Marwat,PK.KP.LAK,,87329,,11724
+Lower Dir,PK.KP.LDR,,38676,,6564
+Malakand,PK.KP.MAL,,20584,,7888
+Mansehra,PK.KP.MAN,,26373,,3919
+Mardan,PK.KP.MAR,,73072,,34331
+Mohmand,PK.KP.MOH,,40368,,21988
+Nowshera,PK.KP.NOW,,33275,,19366
+North Waziristan,PK.KP.NWZ,,28875,,4007
+Orakzai,PK.KP.ORA,,21549,,6603
+Peshawar,PK.KP.PES,,46188,,23212
+Shangla,PK.KP.SHA,,2179,,214
+Swabi,PK.KP.SWB,,75748,,36373
+Swat,PK.KP.SWT,,23641,,2914
+South Waziristan,PK.KP.SWZ,,27310,,1135
+Tank,PK.KP.TAN,,69786,,3207
+Upper Dir,PK.KP.UDR,,9273,,821

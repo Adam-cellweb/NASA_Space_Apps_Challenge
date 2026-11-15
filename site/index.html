@@ -10,7 +10,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
   <header class="top">
@@ -21,6 +25,12 @@
         <span data-i18n="app_tagline">NASA Space Apps Challenge 2026</span>
       </span>
     </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="./" aria-current="page" data-i18n="nav_atlas">Atlas</a>
+      <a href="guide.html" data-i18n="guide">Guide</a>
+      <a href="methods.html" data-i18n="methods">Methods</a>
+      <a href="globe.html" data-i18n="view_3d">3D globe</a>
+    </nav>
     <div class="badges">
       <span class="badge demo" id="demoBadge" hidden>
         <svg class="icon" aria-hidden="true"><use href="#i-alert"/></svg><span data-i18n="demo_badge">DEMO DATA</span>
@@ -45,15 +55,6 @@
           <option value="ps">پښتو</option>
         </select>
       </label>
-      <a class="tool-link ghost" href="globe.html" id="globeLink">
-        <svg class="icon icon-sm" aria-hidden="true"><use href="#i-globe3d"/></svg><span data-i18n="view_3d">3D globe</span>
-      </a>
-      <a class="tool-link" href="guide.html">
-        <svg class="icon icon-sm" aria-hidden="true"><use href="#i-book"/></svg><span data-i18n="guide">Guide</span>
-      </a>
-      <a class="tool-link ghost" href="methods.html">
-        <svg class="icon icon-sm" aria-hidden="true"><use href="#i-beaker"/></svg><span data-i18n="methods">Methods</span>
-      </a>
     </div>
   </header>
 
@@ -65,6 +66,7 @@
         <svg class="icon icon-sm" aria-hidden="true"><use href="#i-info"/></svg>
       </button>
     </div>
+    <div class="hud" id="hud" aria-hidden="true"></div>
     <div class="legend" id="legend" aria-live="polite"></div>
     <div class="loading" id="loading"><span class="spinner"></span><span data-i18n="loading">Loading…</span></div>
     <aside class="panel" id="panel" aria-live="polite"></aside>
@@ -85,6 +87,20 @@
 
   <script src="js/icons.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="js/layers/catalog.js"></script>
+  <script src="js/services/layer-service.js"></script>
+  <script src="js/components/layer-control.js"></script>
+  <script src="js/components/temporal.js"></script>
+  <script src="vendor/anime.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/services/state.js"></script>
+  <script src="js/services/i18n.js"></script>
+  <script src="js/services/data-service.js"></script>
+  <script src="js/services/csv.js"></script>
+  <script src="js/services/motion.js"></script>
+  <script src="js/components/states.js"></script>
+  <script src="js/components/legend.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

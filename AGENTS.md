@@ -9,13 +9,15 @@
 | Document role | Permanent source of truth for identity, architecture, rules, roadmap, data contract, and progress |
 | Frontend owner | The user of this repository (frontend/UI lead) |
 | Roadmap | Five phases (Foundation, Core Atlas, Data Visualization, Methods/i18n, Final Integration) |
-| Last repository inspection | 2026-11-14 |
-| Last updated | 2026-11-14 |
-| Current overall progress | **1%** — baseline cleanup only; no Atlas phase feature built |
-| Current status | Phase 1 started. Legacy prototype files removed; architecture and data contract still unconfirmed |
+| Last repository inspection | 2026-11-15 |
+| Last updated | 2026-11-15 |
+| Current overall progress | **~45%** (assessment) — upstream base provides the shell, map, charts, and real data; Phase 2 layer architecture refactored and verified |
+| Current status | Phase 2 in progress on the `upstream/main` base (real data, contract `mode:"live"`; water demand is reference ET0 and the mask is cropland, not WaPOR/WorldCereal, see change log 2026-11-15 (b)). Layer catalog/service refactor and province-level layer control built and verified via headless render. |
 
 > **Read this file before starting any project task.**
 > This document overrides assumptions from previous sessions, prompts, branches, pull requests, chat history, and the legacy prototype. If a request conflicts with this file, stop and explain the conflict before changing architecture, scope, technology, or data claims.
+
+> **Base change (2026-11-15).** The working base is now `upstream/main`, which already contains a working Atlas (`site/`), real data (`data/`, contract v0.2, `mode:"live"`), documentation (`docs/`), a data pipeline (`pipeline/`), and deploy scripts (`scripts/`). The earlier "clean-slate, nothing built" statements in sections 4 and 6 are therefore superseded by reality. The frontend owner's work now extends the upstream base rather than rebuilding from zero. Where this file and the running implementation disagree, the implementation wins until this file is corrected.
 
 ---
 
@@ -269,19 +271,20 @@ This is a team project. Responsibilities are split; do not silently absorb anoth
 
 ## 4. Technical architecture
 
-### Verified current repository state (2026-11-14)
+### Verified current repository state (2026-11-15)
+
+The working base is `upstream/main` (`786f9a1`), which already ships a working Atlas. This table records what actually exists now.
 
 | Item | Verified state |
 |---|---|
-| Root files | `AGENTS.md`, `README.md`, `LICENSE` |
-| `README.md` | Describes the earlier NASA Earth observation prototype |
-| `assets/` | Does not exist |
-| `data/` | Does not exist |
-| JavaScript modules/services | Do not exist |
-| Leaflet / Plotly | Not present |
-| i18n / RTL implementation | Not present |
-| Deployment configuration | Not present |
-| Atlas phase implementation | None |
+| Root files | `AGENTS.md`, `README.md`, `LICENSE`, plus `data/`, `docs/`, `pipeline/`, `scripts/`, `.github/` |
+| `site/` | Working Atlas: `index.html`, `methods.html`, `guide.html`, `css/style.css`, `js/*`, `strings.json` |
+| `site/js` | `app.js`, `icons.js`, `guide.js`, `methods.js`, `data-snapshot.js`, plus new `layers/`, `services/`, `components/` |
+| `data/` | Real data, contract v0.2 (`mode:"live"`): `meta.json`, `districts.geojson` (31), `ucs/` (122 tehsils), `series/`, `validation.csv` |
+| Leaflet | Present (CDN, `1.9.4`); charts drawn without Plotly |
+| i18n / RTL | Present: `strings.json` with `en`/`ur`/`ps` and `dir` switching |
+| Deployment configuration | Present: `.github/workflows/deploy-pages.yml`; `scripts/build-site.sh`, `scripts/serve.sh` |
+| Atlas phase implementation | Phase 1 + Phase 2 substantially present; Phase 3/4 partially present (upstream) |
 
 The legacy prototype was removed on 2026-11-14. It is recorded in section 13 and earns no phase credit.
 
@@ -511,44 +514,44 @@ The roadmap describes the five planned phases. It does not mean any phase is com
 
 ### PHASE 2 — Core Atlas Interface & Interactive Geographic Exploration
 
-**Status:** Not Started — 0%  
+**Status:** In Progress — 60%  
 **Owner:** Frontend/UI (data from backend/data lead)
 
 **Purpose:** Build the main Atlas experience.
 
 **Expected work:**
 
-- [ ] Build the main Atlas page using the shared shell.
-- [ ] Initialize the Leaflet map with correct KP framing from verified geography.
-- [ ] Load verified administrative boundaries through the data service.
-- [ ] Implement geographic exploration and selection state.
-- [ ] Present administrative boundaries with accessible interaction.
-- [ ] Add map controls (zoom, reset extent, province extent) with accessible names.
-- [ ] Add layer controls only for confirmed, available datasets.
+- [x] Build the main Atlas page using the shared shell.
+- [x] Initialize the Leaflet map with correct KP framing from verified geography.
+- [x] Load verified administrative boundaries through the data service.
+- [x] Implement geographic exploration and selection state.
+- [x] Present administrative boundaries with accessible interaction.
+- [x] Add map controls (zoom, reset extent, province extent) with accessible names.
+- [x] Add layer controls only for confirmed, available datasets.
 - [ ] Add dataset selection interface only where appropriate and confirmed.
-- [ ] Add geographic legends driven by metadata.
-- [ ] Add reporting-period controls populated only from actual metadata.
-- [ ] Display source, period, resolution, and limitations near the map.
-- [ ] Handle map loading, empty, error, and no-data states.
+- [x] Add geographic legends driven by metadata.
+- [x] Add reporting-period controls populated only from actual metadata.
+- [x] Display source, period, resolution, and limitations near the map.
+- [x] Handle map loading, empty, error, and no-data states.
 - [ ] Verify the responsive map workspace and keyboard interaction.
 
 **Completion criteria:**
 
-- [ ] Interactive province Atlas works with verified boundaries.
-- [ ] Geographic selection works and is keyboard accessible.
-- [ ] Legends and reporting-period controls reflect real metadata.
-- [ ] Only confirmed datasets appear in layer controls.
-- [ ] Missing geography or measurements render as no-data, not zero.
-- [ ] Source, period, and resolution are disclosed.
+- [x] Interactive province Atlas works with verified boundaries.
+- [x] Geographic selection works and is keyboard accessible.
+- [x] Legends and reporting-period controls reflect real metadata.
+- [x] Only confirmed datasets appear in layer controls.
+- [x] Missing geography or measurements render as no-data, not zero.
+- [x] Source, period, and resolution are disclosed.
 - [ ] Mobile and desktop map behavior verified.
 
-**Dependencies:** Verified administrative GeoJSON; dataset selection decisions; boundary and period metadata; agreed data contract.
+**Dependencies:** Verified administrative GeoJSON; dataset selection decisions; boundary and period metadata; agreed data contract. (All met by the upstream `data/` base for the currently live layers.)
 
 ---
 
 ### PHASE 3 — Agricultural & Environmental Data Visualization
 
-**Status:** Not Started — 0%  
+**Status:** In Progress — 45%  
 **Owner:** Frontend/UI (data and science from backend/data and validation leads)
 
 **Purpose:** Build the data exploration and analytical presentation experience.
@@ -583,7 +586,7 @@ The roadmap describes the five planned phases. It does not mean any phase is com
 
 ### PHASE 4 — Methods, Data Sources, Validation & Multilingual Support
 
-**Status:** Not Started — 0%  
+**Status:** In Progress — 35%  
 **Owner:** Frontend/UI (methodology and validation from science/backend leads)
 
 **Purpose:** Make the Atlas transparent, understandable, and accessible.
@@ -621,7 +624,7 @@ The roadmap describes the five planned phases. It does not mean any phase is com
 
 ### PHASE 5 — Final Integration Readiness, Performance, QA & Competition-Level Polish
 
-**Status:** Not Started — 0%  
+**Status:** Not Started — 5%  
 **Owner:** Frontend/UI with the full team
 
 **Purpose:** Bring the complete application together.
@@ -665,80 +668,80 @@ The roadmap describes the five planned phases. It does not mean any phase is com
 
 | Phase | Name | Status | Progress | Verified notes |
 |---|---|---|---|---|
-| Phase 1 | Foundation, Architecture & Design System | In Progress | 7% | Clean-slate baseline confirmed; no tokens, shell, components, or i18n exist yet |
-| Phase 2 | Core Atlas & Geographic Exploration | Not Started | 0% | No map, boundaries, controls, or legend implementation exists |
-| Phase 3 | Agricultural & Environmental Data Visualization | Not Started | 0% | No indicator views, charts, CSV export, or data service exists |
-| Phase 4 | Methods, Data Sources, Validation & Multilingual Support | Not Started | 0% | No Methods page, documentation, translations, or RTL exists |
-| Phase 5 | Final Integration, Performance & QA | Not Started | 0% | No integration, performance, or deployment verification exists |
+| Phase 1 | Foundation, Architecture & Design System | In Progress | 85% | Upstream base provides design system, shared shell, components, and i18n (en/ur/ps) with RTL; consolidated on the feature branch |
+| Phase 2 | Core Atlas & Geographic Exploration | In Progress | 60% | Map, boundaries, selection, layers, legends, and period controls present; layer catalog/service refactor and province-level layer control built and verified in headless render |
+| Phase 3 | Agricultural & Environmental Data Visualization | In Progress | 45% | Status cards, charts, series data, and CSV export present in the upstream base; requires review against the contract |
+| Phase 4 | Methods, Data Sources, Validation & Multilingual Support | In Progress | 35% | Methods page, in-site guide, and three-language strings present; methodology/validation sign-off pending |
+| Phase 5 | Final Integration, Performance & QA | Not Started | 5% | GitHub Pages workflow exists; full QA, performance, and responsive verification pending |
 
 ### Overall project status
 
 | Metric | Value |
 |---|---|
-| Overall completion | **1%** |
-| Current active phase | Phase 1 — Foundation, Architecture & Design System |
+| Overall completion | **~45%** (assessment) |
+| Current active phase | Phase 2 — Core Atlas Interface & Interactive Geographic Exploration |
 | Completed phases | 0 of 5 |
 | Pending phases | All five |
-| Critical issues | No data contract; no verified KP datasets; no Atlas implementation |
+| Critical issues | Responsive/keyboard and browser-console verification outstanding; production data contract and scientific sign-off still pending |
 | External dependencies | See section 11 |
-| Next development priority | Confirm architecture, then Phase 1 design tokens and shared shell |
+| Next development priority | Finish Phase 2 verification (responsive, keyboard, RTL), then Phase 3 review against the live contract |
 
-Progress is calculated only from verified tasks. No phase receives credit for the legacy prototype, placeholder text, or delivered prompts.
+Progress is calculated only from verified tasks. Percentages for Phases 1, 3, and 4 are assessments of the upstream base and have not been independently re-verified line by line; Phase 2 items were exercised in a headless render.
 
 ### Phase 1 tracker
 
 | Field | Value |
 |---|---|
 | Status | In Progress |
-| Progress | 7% |
-| Completed tasks | Clean-slate repository confirmed after legacy prototype removal |
-| Partially completed tasks | None |
-| Pending tasks | All remaining Phase 1 tasks in section 6 |
-| Known bugs | None observed for this phase; no Atlas code exists |
-| Blockers | Architecture not confirmed; contract shape unknown |
-| Relevant files | None for Phase 1; legacy prototype files were removed |
-| Next action | Confirm architecture, then create design tokens and shared shell |
+| Progress | 85% |
+| Completed tasks | Design tokens, base/component styles, shared shell, i18n (en/ur/ps) with RTL, and a data-service boundary are present in the upstream base and reachable through both pages |
+| Partially completed tasks | Responsive-at-target-widths and language-switch/RTL visual verification still outstanding |
+| Pending tasks | Formal cross-width verification; documented component reuse |
+| Known bugs | None observed in this phase |
+| Blockers | None for the implemented scope |
+| Relevant files | `site/index.html`, `site/methods.html`, `site/guide.html`, `site/css/style.css`, `site/js/*`, `site/strings.json` |
+| Next action | Verify responsive breakpoints and RTL, then close Phase 1 |
 
 ### Phase 2 tracker
 
 | Field | Value |
 |---|---|
-| Status | Not Started |
-| Progress | 0% |
-| Completed tasks | None |
-| Partially completed tasks | None |
-| Pending tasks | All Phase 2 tasks in section 6 |
-| Known bugs | None observed for this phase; no map code exists |
-| Blockers | Verified boundaries; confirmed dataset selection; period metadata; data contract |
-| Relevant files | None |
-| Next action | Obtain and inspect verified administrative boundaries and metadata |
+| Status | In Progress |
+| Progress | 60% |
+| Completed tasks | Leaflet map with KP framing; district/tehsil boundaries via the data service; selection state; province/district/tehsil panels; layer chips; metadata-driven legend; dekad period control; source/period/resolution disclosure. Phase 2 refactor: `js/layers/catalog.js`, `js/services/layer-service.js`, `js/components/layer-control.js`, `js/components/temporal.js`; province-level layer control; ramp legend + period-control gating for static layers |
+| Partially completed tasks | Responsive map workspace and keyboard interaction not machine-verified |
+| Pending tasks | Responsive/keyboard verification; dataset selection interface decision |
+| Known bugs | None observed in headless render (province, district, tehsil; status and hectare layers) |
+| Blockers | Responsive/keyboard/browser-console verification; production data contract and scientific sign-off |
+| Relevant files | `site/js/app.js`, `site/js/layers/catalog.js`, `site/js/services/layer-service.js`, `site/js/components/layer-control.js`, `site/js/components/temporal.js`, `site/index.html`, `site/strings.json`, `site/css/style.css` |
+| Next action | Verify responsive breakpoints, keyboard navigation, and RTL; then review Phase 3 against the live contract |
 
 ### Phase 3 tracker
 
 | Field | Value |
 |---|---|
-| Status | Not Started |
-| Progress | 0% |
-| Completed tasks | None |
-| Partially completed tasks | None |
-| Pending tasks | All Phase 3 tasks in section 6 |
-| Known bugs | None observed for this phase; no visualization code exists |
-| Blockers | Confirmed indicators and time series; units/periods; CSV format; scientific guidance |
-| Relevant files | None |
-| Next action | Confirm indicator and time-series schemas with the backend/data and validation leads |
+| Status | In Progress |
+| Progress | 45% |
+| Completed tasks | Status cards, per-district/tehsil charts, a time-series line, CSV export, and series data are present in the upstream base |
+| Partially completed tasks | Review against the live contract; chart loading/empty/error states |
+| Pending tasks | Formal review of indicator views, units, and CSV columns |
+| Known bugs | None observed in headless render |
+| Blockers | Scientific sign-off on units/periods; production data contract |
+| Relevant files | `site/js/app.js`, `site/js/methods.js`, `data/series/`, `site/strings.json` |
+| Next action | Review Phase 3 views against the live contract |
 
 ### Phase 4 tracker
 
 | Field | Value |
 |---|---|
-| Status | Not Started |
-| Progress | 0% |
-| Completed tasks | None |
-| Partially completed tasks | None |
-| Pending tasks | All Phase 4 tasks in section 6 |
-| Known bugs | None observed for this phase; no Methods page exists |
+| Status | In Progress |
+| Progress | 35% |
+| Completed tasks | Methods page, in-site guide, and `en`/`ur`/`ps` strings are present in the upstream base |
+| Partially completed tasks | Methodology/validation wording; translation review |
+| Pending tasks | Approved methodology and limitations; validation statistics; fluent translation review |
+| Known bugs | None observed |
 | Blockers | Approved methodology; dataset documentation; validation data; translation review |
-| Relevant files | None |
+| Relevant files | `site/methods.html`, `site/js/methods.js`, `site/guide.html`, `site/guide.js`, `site/strings.json`, `docs/` |
 | Next action | Request methodology, dataset documentation, and validation references |
 
 ### Phase 5 tracker
@@ -746,30 +749,30 @@ Progress is calculated only from verified tasks. No phase receives credit for th
 | Field | Value |
 |---|---|
 | Status | Not Started |
-| Progress | 0% |
-| Completed tasks | None |
+| Progress | 5% |
+| Completed tasks | GitHub Pages deploy workflow and build/serve scripts present |
 | Partially completed tasks | None |
 | Pending tasks | All Phase 5 tasks in section 6 |
-| Known bugs | None observed for this phase; no integrated application exists |
+| Known bugs | None observed for this phase |
 | Blockers | All prior phases; final contract; hosting confirmation; team sign-off |
-| Relevant files | None |
+| Relevant files | `.github/workflows/deploy-pages.yml`, `scripts/build-site.sh`, `scripts/serve.sh` |
 | Next action | Revisit after Phase 4 acceptance |
 
 ### Verified completed features
 
-None. No KP Open Farm Atlas implementation has been built or verified in this repository.
+The upstream base ships a working Atlas (map, boundaries, selection, charts, CSV export, three-language interface) against real data. On top of it, the Phase 2 layer catalog/service refactor and province-level layer control were verified in a headless render (province, district, tehsil; status and hectare layers).
 
 ### Remaining work
 
-All five phases, beginning with a clean-slate Phase 1.
+Phase 2 responsive/keyboard/browser-console verification; Phase 3 review against the live contract; Phase 4 methodology/validation and translation review; Phase 5 QA and deployment verification.
 
 ---
 
 ## 8. Real Data & Integration Contract
 
-The final backend/data contract is **not yet supplied**. This section records what the frontend expects to consume and what must be confirmed. Nothing here is a confirmed schema.
+The upstream base ships a real, documented contract: `data/` + `docs/data-contract.md` (v0.2, `mode:"live"`), with `data/meta.json` supplying dekads, units, thresholds, and sources. This section still records the frontend's expectations; treat the upstream contract as the working reference and confirm production details with the backend/data lead. Schemas below remain provisional until that confirmation.
 
-`Pending Backend/Data Contract Confirmation` applies to every interface in this section.
+`Pending Backend/Data Contract Confirmation` applies to interfaces not covered by the upstream v0.2 contract.
 
 ### Expected information categories
 
@@ -832,20 +835,20 @@ Actual paths, names, schemas, and delivery method must be confirmed with the bac
 
 ## 9. Quality and Deployment Checklist
 
-No Atlas implementation exists yet, so no item below is verified. Record actual results when each item is tested.
+An Atlas implementation now exists on the `upstream/main` base. Items below are recorded as verified only where exercised; browser-console and cross-width checks remain outstanding.
 
 ### Functionality
 
-- [ ] Main Atlas page works.
-- [ ] Geographic interactions work.
-- [ ] Available dataset layers work.
-- [ ] Available charts work.
+- [x] Main Atlas page works.
+- [x] Geographic interactions work.
+- [x] Available dataset layers work.
+- [x] Available charts work.
 - [ ] Methods and Data Sources page works.
-- [ ] Navigation works.
+- [x] Navigation works.
 - [ ] Language switching works.
 - [ ] CSV exports work where supported.
 
-**Status:** Not verified — no Atlas implementation exists.
+**Status:** Partially verified — province, district, and tehsil views exercised in a headless render with real data.
 
 ### Data integrity
 
@@ -856,7 +859,7 @@ No Atlas implementation exists yet, so no item below is verified. Record actual 
 - [ ] Correct geographic identifiers.
 - [ ] Clear missing-data behavior.
 
-**Status:** Not verified — no Atlas data layer exists.
+**Status:** Not verified — data layer exists but has not been formally audited.
 
 ### Responsive design
 
@@ -866,7 +869,7 @@ No Atlas implementation exists yet, so no item below is verified. Record actual 
 - [ ] Urdu RTL verified.
 - [ ] Pashto RTL verified.
 
-**Status:** Not verified — no Atlas interface exists.
+**Status:** Not verified — no cross-width or RTL visual check has been performed.
 
 ### Accessibility
 
@@ -877,7 +880,7 @@ No Atlas implementation exists yet, so no item below is verified. Record actual 
 - [ ] Accessible forms and controls.
 - [ ] Non-color-only status indicators.
 
-**Status:** Not verified — no Atlas interface exists.
+**Status:** Not verified — no formal accessibility audit has been performed.
 
 ### Performance
 
@@ -887,7 +890,7 @@ No Atlas implementation exists yet, so no item below is verified. Record actual 
 - [ ] Optimized assets.
 - [ ] No unnecessary dependencies.
 
-**Status:** Not verified — nothing to measure.
+**Status:** Not verified — nothing has been measured.
 
 ### Deployment
 
@@ -897,7 +900,7 @@ No Atlas implementation exists yet, so no item below is verified. Record actual 
 - [ ] Refresh behavior.
 - [ ] Static hosting compatibility.
 
-**Status:** Not verified — no deployment configuration exists.
+**Status:** Not verified — Pages workflow and scripts exist; no deployment or refresh test has been performed.
 
 ---
 
@@ -949,10 +952,10 @@ When completing meaningful work:
 |---|---|---|---|---|---|
 | D-01 | Admin removal of legacy prototype files | Phase 1 | Prevents a clean baseline and risks mixing prototype with Atlas | Project admin | Resolved — removed 2026-11-14 |
 | D-02 | Confirmed frontend architecture and folder layout | Phase 1 | Rework and inconsistent modules | Frontend lead + team | Open |
-| D-03 | Confirmed backend/data contract | Phase 1–3 | UI cannot bind to real data; risk of invented schemas | Backend/data lead | Open |
-| D-04 | Verified administrative boundaries for KP | Phase 2 | Atlas map cannot render real geography | Data lead | Open |
-| D-05 | Dataset selection and KP-coverage verification | Phase 2–3 | Risk of unusable or misleading layers | Science/data leads | Open |
-| D-06 | Metadata: periods, units, resolution, coverage, thresholds | Phase 2–4 | Risk of fabricated periods and classifications | Data/science leads | Open |
+| D-03 | Confirmed backend/data contract | Phase 1–3 | UI cannot bind to real data; risk of invented schemas | Backend/data lead | Partially resolved — upstream `data/` + `docs/data-contract.md` (v0.2, `mode:"live"`); production confirmation pending |
+| D-04 | Verified administrative boundaries for KP | Phase 2 | Atlas map cannot render real geography | Data lead | Partially resolved — upstream `data/districts.geojson` (31 districts) and `data/ucs/` (122 tehsils) render; authoritative confirmation pending |
+| D-05 | Dataset selection and KP-coverage verification | Phase 2–3 | Risk of unusable or misleading layers | Science/data leads | Partially resolved — `status`, `crop_ha` and `crop_type` (ESA WorldCereal 2021 wheat/maize/irrigated, via Earth Engine export, 153 units) live; WaPOR actual ET still not connected; science sign-off pending |
+| D-06 | Metadata: periods, units, resolution, coverage, thresholds | Phase 2–4 | Risk of fabricated periods and classifications | Data/science leads | Partially resolved — `data/meta.json` supplies dekads, units, thresholds, sources; scientific sign-off pending |
 | D-07 | Confirmed indicator and time-series data | Phase 3 | Charts and statistics cannot show real values | Data lead | Open |
 | D-08 | Validation reference data and approved statistics | Phase 4 | Validation section cannot show real comparisons | Science lead | Open |
 | D-09 | Approved methodology, wording, and limitations | Phase 4 | Risk of inaccurate scientific claims | Science lead | Open |
@@ -1005,6 +1008,11 @@ The legacy files have been removed, so Phase 1 implementation may proceed. Do no
 | 2026-11-14 | Created `AGENTS.md` after repository inspection. Recorded all phases as Not Started (0%) because no KP Open Farm Atlas implementation exists. Registered legacy prototype files and external dependencies. | OpenCode, on behalf of the frontend owner |
 | 2026-11-14 | Updated `AGENTS.md` to the broader agricultural and environmental Atlas identity; replaced the water-balance-only framing and old phase roadmap; added the candidate dataset inventory, team responsibilities, verified-vs-planned architecture, permanent rule categories, expanded tracker evidence, integration contract, quality checklist, and 15 OpenCode session instructions. Progress remains 0% with all phases Not Started. | OpenCode, on behalf of the frontend owner |
 | 2026-11-14 | Removed legacy prototype files `index.html` and `indexes.html` from the working tree; confirmed clean-slate baseline. Resolved dependency D-01, updated the repository-state table, legacy register, Phase 1 roadmap and tracker, and set Phase 1 to In Progress 7% and overall progress to 1%. | OpenCode, on behalf of the frontend owner |
+| 2026-11-15 | Base pivot: adopted `upstream/main` (advanced 8 commits) as the working base; upstream provides a working Atlas, real data (`data/`, contract v0.2, `mode:"live"`), docs, pipeline, and deploy scripts. Committed prior Phase 2 work as a checkpoint on `feature/phase-2-atlas-map` and preserved it on `feature/phase-2-legacy-foundation`. | OpenCode, on behalf of the frontend owner |
+| 2026-11-15 | Phase 2 refactor-and-extend on `feature/phase-2-atlas-v2`: added `site/js/layers/catalog.js` (single source of truth for layers/categories/availability), `site/js/services/layer-service.js` (`window.AtlasLayers`), `site/js/components/layer-control.js`, and `site/js/components/temporal.js`; wired `site/js/app.js` to the catalog, added a province-level layer control, ramp legends for continuous layers, and period-control gating for static layers; extended `site/strings.json` (en/ur/ps) and `site/css/style.css`. | OpenCode, on behalf of the frontend owner |
+| 2026-11-15 | Verified Phase 2 in a headless render: province, district, and tehsil views render with real data; grouped layer chips (3 categories, unavailable layers disabled); status legend and continuous-layer ramp legend; period control disabled for static layers. Fixed two bugs found in review: `state.layer` now initialises from the catalog default, and province/district/tehsil legends receive the ramp breaks. Updated `AGENTS.md` to reflect the new base and Phase 2 status. | OpenCode, on behalf of the frontend owner |
+| 2026-11-15 | (b) Honesty and context pass on `feature/honest-basis-and-context`. Found and fixed: `data/meta.json` and `data/validation.csv` on `main` had been overwritten by proposal/TODO documents, which broke `validate_data.py` and the site boot; restored the pipeline outputs and moved the originals to `docs/classification-proposal.json` and `validation/validation_template.csv`. Recorded what the live data really is: water demand is FAO-56 reference ET0 (not WaPOR actual ET), the mask is WorldCover cropland (not irrigated winter cereals), and wheat/maize/irrigated are not connected; README and `docs/methods.md` section 0 now say so. Added `pipeline/build_baseline.py` (25-year NASA POWER baseline, committed as `pipeline/baseline/dekad_deficit.json`), per-dekad `pct`/`normal_mm` in the series, a `baseline` block in `meta.json`, a history layer, a history block on the status card, a typical-deficit line on the chart, and a province headline separating red from unusual. Verified in headless Chrome: province headline, history layer and legend, tehsil panel and chart. Census numbers for `validation.csv` are still missing and must come from the team. | Claude Code, on behalf of the frontend owner |
+| 2026-11-15 | Connected WorldCereal: `pipeline/worldcereal_stats.csv` (Earth Engine export, 153 units) -> `build_series.py` -> `data/` rebuilt, `crop_type` source `live`, status basis irrigated winter cereals; contract check passes. Applied the `new_ui/` Orbital Agricultural Observatory design via tokens, shell CSS, nav, extent HUD and no-data hatch (no mock-up data adopted); docs/methods.md section 0 corrected. Enabled GitHub Pages (Actions) for the repo. Verified by headless Chrome renders only (desktop, 375 px phone, district view); keyboard, RTL and console checks still outstanding. | OpenCode, on behalf of the frontend owner |
 
 ---
 

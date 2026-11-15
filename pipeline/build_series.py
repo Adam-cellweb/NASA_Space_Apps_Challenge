@@ -155,6 +155,45 @@ def et_wapor(features, dekads):
     return results, dataset
 
 
+# ----------------------------------------------------------------- 25-year context
+BASELINE_PATH = os.path.join(HERE, "baseline", "dekad_deficit.json")
+MIN_BASELINE_YEARS = 20
+NOTABLE_PERCENTILE = 90
+
+
+def load_baseline():
+    if not os.path.exists(BASELINE_PATH):
+        return None
+    return load_json(BASELINE_PATH)
+
+
+def slot_of(d):
+    return (d.month - 1) * 3 + (0 if d.day <= 10 else 1 if d.day <= 20 else 2)
+
+
+def context_for(baseline, unit_id, start, deficit):
+    """Percentile and normal for this dekad against the same dekad in 2001-2025.
+
+    Computed by the pipeline, never in the browser. Returns (None, None, None) when the
+    baseline is absent, was built with a different water-demand method, or has fewer than
+    MIN_BASELINE_YEARS usable years for the slot. The year being reported is excluded.
+    """
+    if baseline is None or deficit is None or unit_id not in baseline["units"]:
+        return None, None, None
+    years = range(baseline["first_year"], baseline["last_year"] + 1)
+    vals = [v for y, v in zip(years, baseline["units"][unit_id][slot_of(start)])
+            if v is not None and y != start.year]
+    if len(vals) < MIN_BASELINE_YEARS:
+        return None, None, None
+    below = sum(1 for v in vals if v < deficit)
+    equal = sum(1 for v in vals if v == deficit)
+    pct = round(100.0 * (below + 0.5 * equal) / len(vals))
+    ordered = sorted(vals)
+    mid = len(ordered) // 2
+    normal = ordered[mid] if len(ordered) % 2 else (ordered[mid - 1] + ordered[mid]) / 2
+    return pct, round(normal, ROUND_MM), len(vals)
+
+
 # ----------------------------------------------------------------- crop areas
 def load_stats(filename, columns):
     path = os.path.join(HERE, filename)
@@ -197,10 +236,23 @@ def main():
     cover = load_stats("worldcover_stats.csv", ["crop_ha", "total_ha"])
     if cover is None:
         sys.exit("worldcover_stats.csv is missing. Run: python3 pipeline/worldcover_stats.py")
+    # Earth Engine export first; the credential-free Zenodo run is the fallback
     cereal = load_stats("worldcereal_stats.csv", ["wheat_ha", "maize_ha", "irrigated_ha"])
+    cereal_source = "earth engine export"
+    if cereal is None:
+        cereal = load_stats("worldcereal_zenodo.csv", ["wheat_ha", "maize_ha", "irrigated_ha"])
+        cereal_source = "zenodo archives"
+    if cereal is not None and not any(v.get("irrigated_ha") for v in cereal.values()):
+        # a partial export with no irrigation column cannot carry the signal
+        print("crop type: irrigated hectares missing, computing the signal on cropland")
+        cereal = None
 
     wapor, wapor_note = (None, "skipped (--no-ee)") if args.no_ee else et_wapor(all_units, dekads)
     et_method = "wapor_aeti" if wapor else "fao56_power"
+    baseline = load_baseline()
+    if baseline and baseline.get("method") != et_method:
+        print(f"baseline skipped: built with {baseline.get('method')}, current method is {et_method}")
+        baseline = None
     if not wapor:
         print(f"water demand: FAO-56 Penman-Monteith from NASA POWER ({wapor_note})")
 
@@ -226,7 +278,8 @@ def main():
                      "dataset": "esa-worldcover public bucket, statistics at about 75 m",
                      "status": "live", "licence": "CC BY 4.0 (ESA)"},
         "crop_type": {"name": "ESA WorldCereal 2021 v100: winter cereals, maize, active irrigation",
-                      "dataset": "ESA/WorldCereal/2021/MODELS/v100 via Earth Engine",
+                      "dataset": ("ESA/WorldCereal/2021/MODELS/v100 via " + cereal_source) if cereal
+                                 else "ESA/WorldCereal/2021/MODELS/v100 (not connected)",
                       "status": "live" if cereal else "not_connected",
                       "licence": "CC BY 4.0 (ESA)",
                       "note": None if cereal else
@@ -258,13 +311,15 @@ def main():
         rows = []
         for (s, e), e_mm, r_mm in zip(dekads, et, rain):
             deficit = None if e_mm is None or r_mm is None else round(e_mm - r_mm, ROUND_MM)
+            pct, normal, n_years = context_for(baseline, k, s, deficit)
             rows.append({"start": s.isoformat(), "end": e.isoformat(), "et_mm": e_mm, "rain_mm": r_mm,
-                         "deficit_mm": deficit, "status": classify(deficit, basis, thr)})
+                         "deficit_mm": deficit, "status": classify(deficit, basis, thr),
+                         "pct": pct, "normal_mm": normal, "baseline_years": n_years})
         latest = rows[-1]
         p = f["properties"]
         p.update(ha)
         p.update({"status": latest["status"], "deficit_mm": latest["deficit_mm"],
-                  "et_mm": latest["et_mm"], "rain_mm": latest["rain_mm"],
+                  "et_mm": latest["et_mm"], "rain_mm": latest["rain_mm"], "pct": latest["pct"],
                   "centroid": [round(lon, 4), round(lat, 4)]})
         key = "uc_id" if "uc_id" in p else "district_id"
         matrix[k] = {"d": [r["deficit_mm"] for r in rows], "s": [r["status"][0] for r in rows]}
@@ -327,6 +382,15 @@ def main():
         "dekads": [{"start": s.isoformat(), "end": e.isoformat()} for s, e in dekads],
         "thresholds": {k: v for k, v in thr.items() if not k.startswith("_")},
         "sources": sources,
+        "baseline": None if baseline is None else {
+            "method": baseline["method"], "first_year": baseline["first_year"],
+            "last_year": baseline["last_year"], "min_years": MIN_BASELINE_YEARS,
+            "notable_percentile": NOTABLE_PERCENTILE,
+            "notable_note": "Presentation only: the site calls a dekad 'among the driest' at or above this "
+                            "percentile (the driest decile). Pending science sign-off; it is not a classification.",
+            "meaning": "Percentile of this dekad's deficit among the same dekad in the baseline years "
+                       "(0 = wettest on record, 100 = driest), same method and same point. "
+                       "Context only; it does not change the traffic light."},
         "counts": {"districts": len(districts), "level3_units": sum(len(v) for v in ucs.values()),
                    "district_status": counts, "units_without_weather": len(missing_power)},
         "unit_note": "Level-3 units are tehsils from geoBoundaries until union-council polygons are sourced.",

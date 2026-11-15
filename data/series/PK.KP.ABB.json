@@ -8,7 +8,10 @@
    "et_mm": 35.7,
    "rain_mm": 38.3,
    "deficit_mm": -2.6,
-   "status": "green"
+   "status": "nodata",
+   "pct": 24,
+   "normal_mm": 25.7,
+   "baseline_years": 25
   },
   {
    "start": "2026-09-21",
@@ -16,7 +19,10 @@
    "et_mm": 33.6,
    "rain_mm": 18.5,
    "deficit_mm": 15.1,
-   "status": "amber"
+   "status": "nodata",
+   "pct": 24,
+   "normal_mm": 34.7,
+   "baseline_years": 25
   },
   {
    "start": "2026-10-01",
@@ -24,7 +30,10 @@
    "et_mm": 38.7,
    "rain_mm": 4.0,
    "deficit_mm": 34.7,
-   "status": "red"
+   "status": "nodata",
+   "pct": 64,
+   "normal_mm": 28.0,
+   "baseline_years": 25
   },
   {
    "start": "2026-10-11",
@@ -32,7 +41,10 @@
    "et_mm": 27.8,
    "rain_mm": 13.4,
    "deficit_mm": 14.4,
-   "status": "amber"
+   "status": "nodata",
+   "pct": 32,
+   "normal_mm": 20.3,
+   "baseline_years": 25
   },
   {
    "start": "2026-10-21",
@@ -40,7 +52,10 @@
    "et_mm": 33.1,
    "rain_mm": 0.0,
    "deficit_mm": 33.1,
-   "status": "red"
+   "status": "nodata",
+   "pct": 64,
+   "normal_mm": 30.8,
+   "baseline_years": 25
   },
   {
    "start": "2026-11-01",
@@ -48,21 +63,24 @@
    "et_mm": 23.9,
    "rain_mm": 0.2,
    "deficit_mm": 23.7,
-   "status": "amber"
+   "status": "nodata",
+   "pct": 48,
+   "normal_mm": 25.7,
+   "baseline_years": 25
   }
  ],
  "hectares": {
   "crop_ha": 11467,
-  "wheat_ha": null,
-  "maize_ha": null,
-  "irrigated_ha": null
+  "wheat_ha": 2348,
+  "maize_ha": 1296,
+  "irrigated_ha": 0
  },
  "et_method": "fao56_power",
- "status_basis": "cropland",
+ "status_basis": "irrigated winter cereals",
  "sources": {
   "water_demand": "Reference evapotranspiration (FAO-56 Penman-Monteith) from NASA POWER daily weather",
   "rain": "NASA POWER daily bias-corrected precipitation (PRECTOTCORR, MERRA-2)",
   "cropland": "ESA WorldCover 2021 v200, class 40 cropland, 10 m"
  },
- "generated_at": "2026-11-15T14:20:26Z"
+ "generated_at": "2026-11-15T14:26:52Z"
 }

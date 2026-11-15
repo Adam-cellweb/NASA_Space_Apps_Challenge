@@ -8,7 +8,11 @@ archive's index with a few small range requests and streams only those four memb
 (about 2.4 GB per product instead of 18 GB), computes the hectares per unit, and
 deletes the file before moving on.
 
-    python3 pipeline/worldcereal_zenodo.py            # writes worldcereal_stats.csv
+    python3 pipeline/worldcereal_zenodo.py            # writes worldcereal_zenodo.csv
+
+This is the credential-free path. If somebody has already exported the same
+products from Earth Engine into worldcereal_stats.csv, build_series.py prefers
+that file and this one becomes an independent check of it.
 
 Classification rasters use 100 for "class present", 0 for absent and 255 for no data.
 Statistics are taken at about 75 m, matching worldcover_stats.py.
@@ -37,7 +41,7 @@ from http_zip import extract_member, open_index
 HERE = os.path.dirname(os.path.abspath(__file__))
 BND = os.path.join(HERE, "cache", "boundaries")
 CACHE = os.path.join(HERE, "cache", "worldcereal")
-OUT = os.path.join(HERE, "worldcereal_stats.csv")
+OUT = os.path.join(HERE, "worldcereal_zenodo.csv")
 ZEN = "https://zenodo.org/records/7875105/files/{key}"
 AEZ_URL = ZEN.format(key="WorldCereal_AEZ.geojson?download=1")
 PRESENT = 100
