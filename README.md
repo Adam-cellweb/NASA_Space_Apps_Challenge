@@ -8,12 +8,22 @@ The first public map of **what grows where in Khyber Pakhtunkhwa, which land is 
 
 ## What it shows
 1. **Province:** 31 districts coloured green, amber or red by water balance for the latest ten-day period, with a chart of how the whole province moved across the last six. Press play to animate them. Switch between a plain map, satellite imagery and terrain, and zoom in to reveal every union council. English, Urdu, Pashto.
-2. **District:** its union councils (tehsils in v0.1), coloured by status or shaded by hectares, with a searchable list sorted driest first and an arrow showing which way each unit moved.
+2. **District:** its tehsils (shown as union councils in the data contract until real UC polygons are sourced), coloured by status or shaded by hectares, with a searchable list sorted driest first and an arrow showing which way each unit moved.
 3. **Union council:** hectares, the deficit in millimetres, a six-dekad chart of crop water use against rainfall, CSV and GeoJSON download, sources and dates.
 4. **Guide:** a built-in tutorial at `/guide.html` in all three languages that explains the colours, the five steps, the vocabulary and the limits.
 5. **Methods and validation:** what each dataset is, how the traffic light is computed, and our cropped-area numbers against the 2024 Agricultural Census, including where they disagree.
 
-Deficit = actual evapotranspiration (FAO WaPOR v3) − rainfall (NASA POWER), on irrigated winter-cereal land (ESA WorldCereal 2021). Green ≤ 0 mm, amber ≤ 30 mm, red > 30 mm. The reasoning is in [docs/thresholds.md](docs/thresholds.md).
+Deficit = water demand − rainfall (NASA POWER), per ten days. Green ≤ 0 mm, amber ≤ 30 mm, red > 30 mm. The reasoning is in [docs/thresholds.md](docs/thresholds.md).
+
+**What the numbers are today (the site shows the same on every panel, from `data/meta.json`):**
+
+| Input | Live build, no credentials | With Earth Engine credentials |
+|---|---|---|
+| Water demand | FAO-56 Penman-Monteith **reference** ET0 from NASA POWER weather. It is what a well-watered grass would use, not what crops actually used. | FAO WaPOR v3 **actual** evapotranspiration |
+| Land the signal applies to | ESA WorldCover 2021 **cropland** (all cropland, any crop, irrigated or not) | ESA WorldCereal 2021 irrigated winter cereals |
+| Wheat, maize, irrigated hectares | Not connected, shown as unavailable | Connected |
+
+**Is this dekad unusual? (context, not a status.)** Every dekad also carries a percentile against the *same* dekad in 2001–2025, computed with the same method at the same point from 25 years of NASA POWER (`pipeline/build_baseline.py`, committed as `pipeline/baseline/dekad_deficit.json`). It never changes the traffic light, and it is only shown when the baseline method matches the live method. It exists because a fixed 30 mm rule marks places red that are simply having a normal dry season: in the 1–10 Nov 2026 dekad, all 5 red districts sit below the 90th percentile (ordinary for the time of year).
 
 ## What it does not claim
 It says "this union council, as a whole, lost more water than it received in the last ten days". It does not say "your farm is dry", it does not forecast, and it does not estimate yield. One satellite pixel holds several 2-acre farms.

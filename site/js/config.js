@@ -16,6 +16,9 @@ Atlas.config = {
   colors: { green: '#15803d', amber: '#d97706', red: '#c2250f', nodata: '#94a3b8' },
   // Cropland hectares quintile ramp (mirror --ramp-0 .. --ramp-4 in tokens.css).
   ramp: ['#eef4ea', '#cfe2c4', '#a3cb98', '#5fa86d', '#15803d'],
+  // Diverging ramp for the history layer: wetter than usual (blue) to drier than usual (brown).
+  // Deliberately avoids the green/amber/red of the traffic light.
+  pctRamp: ['#3b78a8', '#9cc3d9', '#efebe2', '#d9b68a', '#9a5b22'],
 
   // Province view switches from districts to every union council at this zoom.
   detailZoom: 8,

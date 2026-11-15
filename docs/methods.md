@@ -1,9 +1,34 @@
 # Scientific Methodology
 
 Document version: `v0.1.0` | Date: `2026-11-14` | Owner: Person 4
-Status: **Proposed — pending data contract verification and team sign-off**
+Status: **Proposed — pending data contract verification and team sign-off** (section 0 describes the data actually live today)
 
 > Every dataset description below records what the project *specifies* as the intended source. Because the repository contains no actual data yet, all specifications are marked `project_specified_unverified` and must be verified against official documentation before publication. Do not use these descriptions as if they were validated.
+
+---
+
+## 0. What the live site uses today (read this first)
+
+Sections 3 and 4 describe the **intended** crop mask (ESA WorldCereal) and actual-ET source (FAO WaPOR). Those need Earth Engine credentials and are **not connected** in the current public build. The live data (`data/meta.json`, shown in the page header above) uses:
+
+| Input | In the live build today | Note |
+|---|---|---|
+| Water demand | FAO-56 Penman-Monteith **reference** ET0, from NASA POWER temperature, humidity, wind, radiation and pressure | Reference ET0 is the demand of a well-watered grass. It is an upper bound on what crops use, so it overstates deficit wherever crops are rainfed, fallow or water-stressed. |
+| Rainfall | NASA POWER `PRECTOTCORR` (MERRA-2, 0.5° × 0.625°) | Coarse; may misrepresent mountain rainfall. |
+| Land the signal applies to | ESA WorldCover 2021 class 40, **all cropland** | Not restricted to irrigated or winter cereals. |
+| Wheat, maize, irrigated area | Not connected; shown as unavailable | Never estimated. |
+
+When Earth Engine credentials are present, `build_series.py` switches to WaPOR actual ET and WorldCereal, and records which it used in `meta.json` and in every series file.
+
+### 0.1 Comparison with history (context only)
+
+Each dekad's deficit is also ranked against the same calendar dekad in 2001–2025:
+
+- **Method.** For every unit and every calendar dekad, `pipeline/build_baseline.py` computes reference ET0 minus rain from NASA POWER daily data with the *same* equations as the live series, for each year 2001–2025. `build_series.py` then reports the percentile of the current deficit among those years (mid-rank for ties, the reported year excluded, at least 20 usable years, otherwise no value).
+- **Reading it.** 100 means the largest deficit on record for that dekad at that point, 0 the smallest. "Typical" is the median of the baseline years.
+- **What it is not.** It does not change the traffic light and is not a forecast or a drought declaration. It compares like with like only: it is hidden whenever the live method differs from the baseline method (for example WaPOR versus ET0).
+- **Presentation setting.** The site words a dekad as "among the driest" at or above `baseline.notable_percentile` (currently 90, the driest decile), and says a red status is "not unusual for this time of year" below it. This is a wording convention, not a scientific classification, and is **pending science-owner sign-off**.
+- **Known limits.** Percentiles come from a 25-year sample with coarse-grid weather, so they are approximate and should not be read to the last digit. The third dekad of a month has 8 to 11 days; comparisons are always within one calendar slot, so this does not bias them. Climate trends mean the older years may be less representative.
 
 ---
 

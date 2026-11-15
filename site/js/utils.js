@@ -50,10 +50,11 @@ Atlas.util = (function () {
     return [0.2, 0.4, 0.6, 0.8].map(function (q) { return v[Math.min(v.length - 1, Math.floor(q * v.length))]; });
   }
 
-  function haColor(value, breaks) {
+  function haColor(value, breaks, ramp) {
+    var colors = ramp || Atlas.config.ramp;
     if (value == null || !breaks) return Atlas.config.colors.nodata;
-    for (var i = 0; i < breaks.length; i++) if (value <= breaks[i]) return Atlas.config.ramp[i];
-    return Atlas.config.ramp[4];
+    for (var i = 0; i < breaks.length; i++) if (value <= breaks[i]) return colors[i];
+    return colors[colors.length - 1];
   }
 
   return {

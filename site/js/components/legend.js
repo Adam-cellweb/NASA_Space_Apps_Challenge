@@ -57,6 +57,14 @@ Atlas.components.legend = (function () {
       body.appendChild(el('div', { 'class': 'legend-note' }, [
         document.createTextNode(t('legend_note', { basis: t('basis_' + (meta.status_basis === 'cropland' ? 'cropland' : 'irrigated')) }) + ' '),
         el('a', { href: 'guide.html', text: t('legend_learn') })]));
+    } else if (layer.type === 'percentile') {
+      var pr = Atlas.config[layer.ramp];
+      body.appendChild(el('div', { 'class': 'ramp', style: 'background:linear-gradient(90deg,' + pr.join(',') + ')' }));
+      body.appendChild(el('div', { 'class': 'ramp-labels' }, [
+        el('span', { text: t('pct_low') }), el('span', { text: t('pct_high') })]));
+      var bl = meta.baseline;
+      body.appendChild(el('div', { 'class': 'legend-note',
+        text: t(layer.noteKey, { from: bl.first_year, to: bl.last_year }) }));
     } else {
       body.appendChild(el('div', { 'class': 'ramp' }));
       body.appendChild(el('div', { 'class': 'ramp-labels' }, [

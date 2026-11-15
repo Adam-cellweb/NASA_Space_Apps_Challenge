@@ -12,7 +12,7 @@
 // tc-wintercereals and tc-maize-main seasons). Statistics at 100 m keep the export under the
 // time limit; error vs 10 m is under 2 % for units of this size.
 
-var ASSET = 'projects/kp-farm-atlas/assets/kp_units';   // <- your merged table
+var ASSET = 'projects/linked-in-508505/assets/kp_units';   // <- your merged table
 var units = ee.FeatureCollection(ASSET);
 var wc = ee.ImageCollection('ESA/WorldCereal/2021/MODELS/v100');
 var SCALE = 100;
@@ -50,6 +50,15 @@ print('first rows', stats.limit(5));
 Map.centerObject(units, 7);
 Map.addLayer(wheat.gt(0).selfMask(), {palette: ['f9a825']}, 'winter cereals 2021');
 Map.addLayer(irr.gt(0).selfMask(), {palette: ['1565c0']}, 'irrigated winter cereals 2021');
+
+// No-Drive fallback: prints the finished CSV as text in the Console (copy it from there).
+var lines = stats.map(function (f) {
+  var row = ee.List([f.get('id'), f.get('crop_ha'), f.get('wheat_ha'),
+                     f.get('maize_ha'), f.get('irrigated_ha')]).join(',');
+  return ee.Feature(null, {line: row});
+}).aggregate_array('line');
+print('CSV (copy everything below)', ee.String('id,crop_ha,wheat_ha,maize_ha,irrigated_ha\n')
+  .cat(ee.List(lines).join('\n')));
 
 Export.table.toDrive({
   collection: stats,

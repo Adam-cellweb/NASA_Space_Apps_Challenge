@@ -19,6 +19,14 @@
   var fmtInt = util.fmtInt, fmtMm = util.fmtMm, fmtDate = util.fmtDate;
   var dekadLabel = util.dekadLabel, stamp = util.stamp;
   var quantiles = util.quantiles, haColor = util.haColor;
+  // Layers may carry fixed class breaks and their own colour ramp (the history layer);
+  // otherwise hectares are shaded by quintile rank within the units on screen.
+  function breaksFor(layer, features) {
+    return layer.breaks || quantiles(features.map(function (f) { return f.properties[layer.id]; }));
+  }
+  function shade(layer, value, breaks) {
+    return haColor(value, breaks, layer.ramp ? cfg[layer.ramp] : null);
+  }
   function t(key, vars) { return i18n.t(key, vars); }
   function nameOf(p) { return i18n.name(p); }
 
@@ -159,9 +167,9 @@
       return;
     }
     var layer = currentLayer();
-    var breaks = quantiles(districts.features.map(function (f) { return f.properties[layer.id]; }));
+    var breaks = breaksFor(layer, districts.features);
     var dim = state.level !== 'province' || state.detail;
-    districtLayer.setStyle(function (f) { return rampStyle(haColor(f.properties[layer.id], breaks), dim); });
+    districtLayer.setStyle(function (f) { return rampStyle(shade(layer, f.properties[layer.id], breaks), dim); });
   }
   function fit(bounds, pad) {
     map.invalidateSize();
@@ -228,8 +236,8 @@
     var status = layer.id === 'status';
     var dim = state.level !== 'province' || state.detail;
     var breaks = status ? null
-      : quantiles(districts.features.map(function (f) { return f.properties[layer.id]; }));
-    function fill(p) { return status ? styleFor(p._st, dim) : rampStyle(haColor(p[layer.id], breaks), dim); }
+      : breaksFor(layer, districts.features);
+    function fill(p) { return status ? styleFor(p._st, dim) : rampStyle(shade(layer, p[layer.id], breaks), dim); }
     districtLayer = L.geoJSON(districts, {
       style: function (f) { var p = f.properties; p._st = statusById ? statusById[p.district_id] : p.status; return fill(p); },
       onEachFeature: function (f, layer2) {
@@ -241,7 +249,7 @@
             : (p[layer.id] == null ? '' : fmtInt(p[layer.id]) + ' ' + layerUnit(layer));
           addLabel(layer2, '<span class="ml-n">' + nameOf(p) + '</span>' +
             (val ? '<span class="ml-v">' + val + '</span>' : ''));
-          hoverable(layer2, function () { return status ? styleFor(p._st, false) : rampStyle(haColor(p[layer.id], breaks), false); });
+          hoverable(layer2, function () { return status ? styleFor(p._st, false) : rampStyle(shade(layer, p[layer.id], breaks), false); });
         }
         layer2.on('click', function () { openDistrict(p.district_id); });
       }
@@ -256,12 +264,12 @@
     var layer = currentLayer();
     var status = layer.id === 'status';
     var breaks = status ? null
-      : quantiles(fc.features.map(function (f) { return f.properties[layer.id]; }));
+      : breaksFor(layer, fc.features);
     ucLayer = L.geoJSON(fc, {
       style: function (f) {
         var p = f.properties;
         if (status) return styleFor(statusById ? statusById[p.uc_id] : p.status, false);
-        return rampStyle(haColor(p[layer.id], breaks), false);
+        return rampStyle(shade(layer, p[layer.id], breaks), false);
       },
       onEachFeature: function (f, lyr) {
         var p = f.properties;
@@ -272,7 +280,7 @@
         addLabel(lyr, '<span class="ml-n">' + p.uc_name_en + '</span>' +
           (val ? '<span class="ml-v">' + val + '</span>' : ''));
         hoverable(lyr, function () {
-          return status ? styleFor(st, false) : rampStyle(haColor(p[layer.id], breaks), false);
+          return status ? styleFor(st, false) : rampStyle(shade(layer, p[layer.id], breaks), false);
         });
         lyr.on('click', function () { openUC(p.district_id, p.uc_id); });
         if (state.ucId === p.uc_id) lyr.setStyle({ color: '#0f141b', weight: 2.8, fillOpacity: 0.92 });
@@ -316,6 +324,12 @@
   function setLayer(id) {
     if (!Layers.get(id) || id === state.layer) return;
     state.layer = id;
+    if (Layers.get(id).latestOnly) {
+      // the history percentile is computed for the latest dekad only
+      state.dekadIndex = meta.dekads.length - 1;
+      qs('dekadSelect').value = state.dekadIndex;
+      setPlaying(false);
+    }
     if (state.level === 'province') openProvince(true);
     else if (state.level === 'district') openDistrict(state.districtId, true);
     else if (state.level === 'uc') openUC(state.districtId, state.ucId);
@@ -334,7 +348,7 @@
   function renderProvince(statusById) {
     var layer = currentLayer();
     var status = layer.id === 'status';
-    var breaks = status ? null : quantiles(districts.features.map(function (f) { return f.properties[layer.id]; }));
+    var breaks = status ? null : breaksFor(layer, districts.features);
     var inner = panelShell();
     inner.appendChild(el('div', { 'class': 'crumbs' }, [el('span', { 'class': 'here', text: t('province') })]));
     inner.appendChild(el('div', { 'class': 'title-row' }, [el('h1', { text: t('province') })]));
@@ -353,6 +367,9 @@
         el('div', { 'class': 'v num', text: counts[s] })]));
     });
     inner.appendChild(grid);
+    var headline = el('p', { 'class': 'headline', hidden: true });
+    inner.appendChild(headline);
+    provinceHeadline(headline);
 
     inner.appendChild(el('h2', {}, [icon('layers'), document.createTextNode(t('layers'))]));
     inner.appendChild(LayerControl.render({
@@ -373,7 +390,7 @@
     var list = el('ul', { 'class': 'list' });
     rows.forEach(function (f) {
       var p = f.properties, st = statusById ? statusById[p.district_id] : p.status;
-      var dot = status ? COLORS[st] : haColor(p[layer.id], breaks);
+      var dot = status ? COLORS[st] : shade(layer, p[layer.id], breaks);
       var row = listRow(dot, nameOf(p), valueText(p), function () { openDistrict(p.district_id); });
       list.appendChild(row);
       if (status) movement(p.district_id, row);
@@ -384,6 +401,29 @@
     var hint = detailHint();
     if (hint) inner.appendChild(hint);
     inner.appendChild(sourcesBlock());
+  }
+
+  // One sentence that separates "red by the fixed rule" from "unusual for the season".
+  // Counts only; the percentile and the status both come from the pipeline.
+  function provinceHeadline(node) {
+    if (!baselineOn()) return;
+    var notable = meta.baseline.notable_percentile;
+    Promise.all(districts.features.map(function (f) { return series(f.properties.district_id); })).then(function (all) {
+      var red = 0, redTypical = 0, unusual = 0, known = 0;
+      all.forEach(function (s) {
+        var d = dekadAt(s, state.dekadIndex);
+        if (d.pct == null) return;
+        known++;
+        if (d.status === 'red') { red++; if (d.pct < notable) redTypical++; }
+        if (d.pct >= notable) unusual++;
+      });
+      if (!known) return;
+      var parts = [t('headline_red', { red: red, n: known, max: meta.thresholds.amber.max_deficit_mm })];
+      if (red) parts.push(t('headline_typical', { typical: redTypical }));
+      parts.push(t('headline_unusual', { unusual: unusual, share: 100 - notable }));
+      node.textContent = parts.join(' ');
+      node.hidden = false;
+    });
   }
 
   function provinceTrend(node) {
@@ -474,7 +514,7 @@
     inner.appendChild(searchBox());
     var layer = currentLayer();
     var status = layer.id === 'status';
-    var breaks = status ? null : quantiles(fc.features.map(function (f) { return f.properties[layer.id]; }));
+    var breaks = status ? null : breaksFor(layer, fc.features);
     var rows = fc.features.slice().sort(function (a, b) {
       var av = valueOf(a.properties), bv = valueOf(b.properties);
       return (bv == null ? -1e9 : bv) - (av == null ? -1e9 : av);
@@ -482,7 +522,7 @@
     var list = el('ul', { 'class': 'list' });
     rows.forEach(function (f) {
       var u = f.properties, st = statusById ? statusById[u.uc_id] : u.status;
-      var dot = status ? COLORS[st] : haColor(u[layer.id], breaks);
+      var dot = status ? COLORS[st] : shade(layer, u[layer.id], breaks);
       var row = listRow(dot, u.uc_name_en, valueText(u), function () { openUC(u.district_id, u.uc_id); },
         !status && u[layer.id] == null);
       list.appendChild(row);
@@ -624,8 +664,40 @@
     body.appendChild(el('p', { 'class': 'status-what',
       text: t('status_sentence', { ha: fmtInt(p.crop_ha), basis: t('basis_' + (meta.status_basis === 'cropland' ? 'cropland' : 'irrigated')) }) }));
     body.appendChild(el('p', { 'class': 'status-rule', text: thresholdText(st) }));
+    var hist = historyBlock(cur, st);
+    if (hist) body.appendChild(hist);
     card.appendChild(body);
     return card;
+  }
+  // How unusual is this dekad's deficit for this place and time of year? Context only:
+  // the pipeline computes the percentile, the traffic light stays the fixed rule.
+  function baselineOn() { return !!(meta.baseline && meta.baseline.method === meta.et_method); }
+  function historyBlock(cur, st) {
+    if (!baselineOn() || cur.pct == null) return null;
+    var bl = meta.baseline, notable = bl.notable_percentile;
+    var box = el('div', { 'class': 'history' });
+    box.appendChild(el('div', { 'class': 'history-head' }, [icon('chart', 'icon-sm'),
+      document.createTextNode(t('hist_title', { from: bl.first_year, to: bl.last_year }))]));
+    var track = el('div', { 'class': 'pct-track', role: 'img',
+      'aria-label': t('hist_aria', { pct: cur.pct }) });
+    track.style.background = 'linear-gradient(90deg,' + cfg.pctRamp.join(',') + ')';
+    track.appendChild(el('span', { 'class': 'pct-mark', style: 'left:' + cur.pct + '%' }));
+    box.appendChild(track);
+    box.appendChild(el('div', { 'class': 'pct-ends' }, [
+      el('span', { text: t('pct_low') }), el('span', { text: t('pct_high') })]));
+    box.appendChild(el('p', { 'class': 'history-text', text: t('hist_sentence', {
+      pct: cur.pct, normal: cur.normal_mm == null ? '–' : fmtMm(cur.normal_mm) }) }));
+    var callout = null;
+    if (notable != null && cur.pct >= notable) {
+      callout = el('p', { 'class': 'history-flag dry' }, [icon('alert', 'icon-sm'),
+        document.createTextNode(t('hist_unusual', { share: 100 - notable }))]);
+    } else if (notable != null && st === 'red') {
+      callout = el('p', { 'class': 'history-flag' }, [icon('info', 'icon-sm'),
+        document.createTextNode(t('hist_red_typical'))]);
+    }
+    if (callout) box.appendChild(callout);
+    box.appendChild(el('p', { 'class': 'history-note', text: t('hist_note', { from: bl.first_year, to: bl.last_year }) }));
+    return box;
   }
   function thresholdText(st) {
     var m = meta.thresholds.amber.max_deficit_mm;
@@ -724,7 +796,12 @@
           x: x, y: ser.dekads.map(function (d) { return d.deficit_mm; }),
           line: { color: '#c2250f', width: 2 }, marker: { size: 6 },
           hovertemplate: '%{y:.1f} mm<extra>' + t('deficit') + '</extra>' }
-      ], {
+    ].concat(baselineOn() && ser.dekads.some(function (d) { return d.normal_mm != null; }) ? [
+        { type: 'scatter', mode: 'lines', name: t('normal_line', { from: meta.baseline.first_year, to: meta.baseline.last_year }),
+          x: x, y: ser.dekads.map(function (d) { return d.normal_mm; }),
+          line: { color: '#6b7280', width: 1.6, dash: 'dot' }, connectgaps: false,
+          hovertemplate: '%{y:.1f} mm<extra>' + t('normal_short') + '</extra>' }
+      ] : []), {
         barmode: 'group', height: 236, margin: { l: 38, r: 10, t: 6, b: 30 },
         legend: { orientation: 'h', y: 1.18, x: 0, font: { size: 11 } },
         yaxis: { title: { text: t('mm'), font: { size: 11 } }, gridcolor: '#eef1f6', zerolinecolor: '#cbd5e1' },
@@ -746,10 +823,14 @@
 
   // ------------------------------------------------------------------ CSV
   function downloadCSV(ser, id, label) {
-    var rows = [['id', 'name', 'dekad_start', 'dekad_end', 'water_needed_mm', 'rain_mm', 'deficit_mm', 'status']];
+    var rows = [['id', 'name', 'dekad_start', 'dekad_end', 'water_needed_mm', 'rain_mm', 'deficit_mm', 'status',
+      'typical_deficit_mm', 'percentile_vs_history']];
     (ser ? ser.dekads : []).forEach(function (d) {
-      rows.push([id, label, d.start, d.end, d.et_mm, d.rain_mm, d.deficit_mm, d.status]);
+      rows.push([id, label, d.start, d.end, d.et_mm, d.rain_mm, d.deficit_mm, d.status,
+        d.normal_mm == null ? '' : d.normal_mm, d.pct == null ? '' : d.pct]);
     });
+    if (meta.baseline) rows.push(['# history', 'percentile of this dekad among the same dekad in ' +
+      meta.baseline.first_year + '-' + meta.baseline.last_year + ' (same method, same point); 100 = driest; context only']);
     rows.push([]);
     rows.push(['# method', ser ? ser.et_method : meta.et_method]);
     rows.push(['# sources', ser ? Object.keys(ser.sources).map(function (k) { return k + ': ' + ser.sources[k]; }).join(' | ') : '']);

@@ -28,6 +28,7 @@
   }
   function isAvailable(layer, meta, features) {
     if (!layer) return false;
+    if (layer.requires === 'baseline' && !(meta && meta.baseline)) return false;
     var src = (layer.source && meta && meta.sources) ? meta.sources[layer.source] : null;
     if (layer.source && src && src.status !== 'live') return false;
     return hasValues(features, layer.id);

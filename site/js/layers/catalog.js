@@ -8,6 +8,11 @@
   var LAYERS = [
     { id: 'status', nameKey: 'layer_status', icon: 'droplet', type: 'categorical',
       temporal: true, unit: 'mm', category: 'water', source: null },
+    // Percentile of the latest dekad's deficit against the same dekad in 2001-2025
+    // (same method, same point). Computed by the pipeline; context only, never a status.
+    { id: 'pct', nameKey: 'layer_pct', icon: 'chart', type: 'percentile',
+      temporal: false, latestOnly: true, unit: 'unit_pct', category: 'water', source: null,
+      requires: 'baseline', breaks: [20, 40, 60, 80], ramp: 'pctRamp', noteKey: 'layer_note_pct' },
     { id: 'crop_ha', nameKey: 'layer_crop_ha', icon: 'sprout', type: 'continuous',
       temporal: false, unit: 'ha', category: 'land', source: 'cropland' },
     { id: 'wheat_ha', nameKey: 'layer_wheat_ha', icon: 'wheat', type: 'continuous',
