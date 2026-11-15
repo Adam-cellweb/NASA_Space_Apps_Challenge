@@ -522,7 +522,7 @@
     inner.appendChild(statusCard(currentFor(dser, p), p));
     inner.appendChild(el('h2', {}, [icon('sprout'), document.createTextNode(t('land_title'))]));
     inner.appendChild(hectares(p));
-    if (!hasCropType()) inner.appendChild(cropTypeNotice());
+    if (hasCropType()) inner.appendChild(cropYearNote()); else inner.appendChild(cropTypeNotice());
 
     inner.appendChild(el('h2', {}, [icon('layers'), document.createTextNode(t('layers'))]));
     inner.appendChild(LayerControl.render({
@@ -594,7 +594,7 @@
 
     inner.appendChild(el('h2', {}, [icon('sprout'), document.createTextNode(t('land_title'))]));
     inner.appendChild(hectares(p));
-    if (!hasCropType()) inner.appendChild(cropTypeNotice());
+    if (hasCropType()) inner.appendChild(cropYearNote()); else inner.appendChild(cropTypeNotice());
 
     inner.appendChild(el('h2', {}, [icon('chart'), document.createTextNode(t('chart_title'))]));
     var chart = el('div', { 'class': 'chart' });
@@ -750,6 +750,9 @@
     });
     return grid;
   }
+  function cropYearNote() {
+    return hasCropType() ? el('p', { 'class': 'hint', text: t('crop_year_note') }) : null;
+  }
   function cropTypeNotice() {
     return el('div', { 'class': 'notice' }, [icon('info', 'icon-sm'),
       el('span', {}, [document.createTextNode(t('crop_type_notice') + ' '),
@@ -880,7 +883,8 @@
     state.playing = on;
     var btn = qs('playBtn');
     btn.classList.toggle('on', on);
-    btn.firstChild.firstChild.setAttribute('href', on ? '#i-pause' : '#i-play');
+    var use = btn.querySelector('use');
+    if (use) use.setAttribute('href', on ? '#i-pause' : '#i-play');
     btn.setAttribute('aria-label', on ? t('pause') : t('play'));
     if (playTimer) { clearInterval(playTimer); playTimer = null; }
     if (!on) return;

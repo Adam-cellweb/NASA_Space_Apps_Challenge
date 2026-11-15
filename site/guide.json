@@ -38,12 +38,12 @@
        {
         "color": "amber",
         "b": "Amber",
-        "s": "A deficit of 1 to 30 mm. One irrigation turn covers this."
+        "s": "A deficit of 1 to 30 mm."
        },
        {
         "color": "red",
         "b": "Red",
-        "s": "A deficit above 30 mm. More than one irrigation turn is missing."
+        "s": "A deficit above 30 mm."
        },
        {
         "color": "nodata",
@@ -53,7 +53,7 @@
       ]
      },
      {
-      "p": "The 30 mm boundary is not arbitrary. A canal turn in this region delivers roughly 30 mm to the root zone, so a deficit under 30 mm is one turn away from balance and a deficit above it means a turn was missed."
+      "p": "The 30 mm boundary is the project's proposed cut-off, pending sign-off by the science owner. It is a fixed reporting rule applied the same way everywhere, not a measured crop threshold."
      }
     ]
    },
@@ -261,12 +261,12 @@
        {
         "color": "amber",
         "b": "زرد",
-        "s": "1 تا 30 ملی میٹر کمی۔ ایک آبپاشی باری سے پوری ہو جاتی ہے۔"
+        "s": "1 تا 30 ملی میٹر کمی۔"
        },
        {
         "color": "red",
         "b": "سرخ",
-        "s": "30 ملی میٹر سے زیادہ کمی۔ ایک سے زیادہ باری رہ گئی ہے۔"
+        "s": "30 ملی میٹر سے زیادہ کمی۔"
        },
        {
         "color": "nodata",
@@ -276,7 +276,7 @@
       ]
      },
      {
-      "p": "30 ملی میٹر کی حد بےوجہ نہیں۔ اس علاقے میں نہر کی ایک باری جڑوں تک تقریباً 30 ملی میٹر پانی پہنچاتی ہے، اس لیے اس سے کم کمی ایک باری سے پوری ہو جاتی ہے اور زیادہ کمی کا مطلب ہے کہ ایک باری رہ گئی۔"
+      "p": "30 ملی میٹر کی حد منصوبے کی تجویز کردہ حد ہے اور سائنسی ذمہ دار کی منظوری کی منتظر ہے۔ یہ ہر جگہ یکساں لاگو ہونے والا مقررہ اصول ہے، فصل کی ناپی گئی حد نہیں۔"
      }
     ]
    },
@@ -484,12 +484,12 @@
        {
         "color": "amber",
         "b": "ژېړ",
-        "s": "۱ تر ۳۰ ملي متره کمښت. یوه د اوبو وار یې پوره کوي."
+        "s": "۱ تر ۳۰ ملي متره کمښت."
        },
        {
         "color": "red",
         "b": "سور",
-        "s": "له ۳۰ ملي مترو زیات کمښت. له یوې وارې زیات پاتې دی."
+        "s": "له ۳۰ ملي مترو زیات کمښت."
        },
        {
         "color": "nodata",
@@ -499,7 +499,7 @@
       ]
      },
      {
-      "p": "د ۳۰ ملي مترو برید بې دلیله نه دی. په دې سیمه کې د ویالې یوه وار نږدې ۳۰ ملي متره اوبه ریښو ته رسوي، نو تر دې کم کمښت په یوه وار پوره کېږي او تر دې زیات یعنې یوه وار پاتې شوې."
+      "p": "د ۳۰ ملي مترو برید د پروژې وړاندیز شوی حد دی او د ساینسي مسوول تایید ته منتظر دی. دا په ټولو ځایونو کې یو شان پلي کېدونکی ټاکلی قاعده ده، د فصل اندازه شوی حد نه دی."
      }
     ]
    },
