@@ -52,7 +52,7 @@ Atlas.components.legend = (function () {
       [['green', t('legend_green')], ['amber', t('legend_amber', { max: max })],
        ['red', t('legend_red', { max: max })], ['nodata', t('legend_nodata')]].forEach(function (r) {
         body.appendChild(el('div', { 'class': 'legend-row' }, [
-          el('span', { 'class': 'sw', style: 'background:' + colors[r[0]] }), el('span', { text: r[1] })]));
+          el('span', { 'class': 'sw' + (r[0] === 'nodata' ? ' nodata' : ''), style: 'background:' + colors[r[0]] }), el('span', { text: r[1] })]));
       });
       body.appendChild(el('div', { 'class': 'legend-note' }, [
         document.createTextNode(t('legend_note', { basis: t('basis_' + (meta.status_basis === 'cropland' ? 'cropland' : 'irrigated')) }) + ' '),

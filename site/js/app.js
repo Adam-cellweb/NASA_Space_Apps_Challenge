@@ -142,11 +142,35 @@
     });
   }
 
+  // Real map extent for the HUD (degrees, from the current view; no data involved).
+  function dms(v, pos, neg) {
+    var a = Math.abs(v), d = Math.floor(a), m = Math.floor((a - d) * 60);
+    return d + '°' + (m < 10 ? '0' : '') + m + '\u2032' + (v >= 0 ? pos : neg);
+  }
+  function updateHud() {
+    var hud = qs('hud'); if (!hud || !map) return;
+    var b = map.getBounds();
+    hud.textContent = '';
+    hud.appendChild(el('span', { dir: 'ltr', text: t('hud_extent') + ': ' + dms(b.getSouth(), 'N', 'S') + '–' + dms(b.getNorth(), 'N', 'S') +
+      ' · ' + dms(b.getWest(), 'E', 'W') + '–' + dms(b.getEast(), 'E', 'W') }));
+  }
+  // No-data areas are drawn with a 45° hatch so they read as "unmapped", never as a colour class.
+  function ensureHatch() {
+    var svg = map && map.getPane('overlayPane').querySelector('svg');
+    if (!svg || svg.querySelector('#kp-hatch')) return;
+    var ns = 'http://www.w3.org/2000/svg';
+    var defs = document.createElementNS(ns, 'defs');
+    defs.innerHTML = '<pattern id="kp-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">' +
+      '<rect width="6" height="6" fill="#dbe2ec"/><line x1="0" y1="0" x2="0" y2="6" stroke="#94a3b8" stroke-width="2"/></pattern>';
+    svg.insertBefore(defs, svg.firstChild);
+  }
   function initMap() {
     map = L.map('map', { zoomControl: false, attributionControl: true, minZoom: 5 }).setView([34.2, 71.8], 7);
-    L.control.zoom({ position: 'topleft' }).addTo(map);
+    L.control.zoom({ position: 'bottomright' }).addTo(map);
     L.control.scale({ imperial: false, position: 'bottomright' }).addTo(map);
     map.on('zoomend moveend', updateLabels);
+    map.on('moveend', updateHud);
+    map.on('layeradd zoomend', ensureHatch);
     map.on('zoomend', syncDetail);
     setBase(activeBase);
     qs('mapToggle').addEventListener('click', function () {
@@ -179,7 +203,7 @@
   function styleFor(status, dim) {
     var dark = activeBase === 'imagery';
     return { color: dark ? '#0f141b' : '#ffffff', weight: dim ? 0.7 : 1.1, opacity: dim ? 0.6 : 1,
-             fillColor: COLORS[status] || COLORS.nodata, fillOpacity: dim ? 0.2 : (dark ? 0.62 : 0.8) };
+             fillColor: status === 'nodata' || !COLORS[status] ? 'url(#kp-hatch)' : COLORS[status], fillOpacity: dim ? 0.2 : (dark ? 0.62 : 0.8) };
   }
   function rampStyle(fillColor, dim) {
     var dark = activeBase === 'imagery';

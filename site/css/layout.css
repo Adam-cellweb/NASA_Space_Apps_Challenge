@@ -3,67 +3,81 @@
 
 /* ---------------------------------------------------------------- header */
 .top {
-  height: var(--header-h); flex: none; display: flex; align-items: center; gap: 12px;
-  padding: 0 14px; color: #fff; min-width: 0; overflow: hidden;
-  background: linear-gradient(180deg, var(--nasa-blue) 0%, var(--nasa-blue-700) 100%);
-  border-bottom: 3px solid var(--nasa-red);
+  height: var(--header-h); flex: none; display: flex; align-items: center; gap: 16px;
+  padding: 0 24px; min-width: 0; overflow: hidden; position: relative; z-index: 900;
+  background: var(--surface); color: var(--ink);
+  border-bottom: 1px solid var(--line); box-shadow: var(--shadow-1);
 }
-.brand { display: flex; align-items: center; gap: 10px; color: #fff; text-decoration: none; min-width: 0; flex: 0 1 auto; overflow: hidden; }
+.brand { display: flex; align-items: center; gap: 12px; color: var(--ink); text-decoration: none; min-width: 0; flex: 0 1 auto; overflow: hidden; }
 .brand-mark {
-  width: 34px; height: 34px; flex: none; display: grid; place-items: center;
-  border-radius: 9px; background: rgba(255, 255, 255, .12);
-  border: 1px solid rgba(255, 255, 255, .22);
+  width: 40px; height: 40px; flex: none; display: grid; place-items: center;
+  border-radius: var(--r-md); background: var(--nasa-blue); color: #fff;
 }
-.brand-mark .icon { width: 20px; height: 20px; }
+.brand-mark .icon { width: 22px; height: 22px; }
 .brand-text { display: flex; flex-direction: column; min-width: 0; }
-.brand-text b { font-size: 15px; font-weight: 650; letter-spacing: -.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.brand-text b { font-size: 20px; line-height: 24px; font-weight: 700; letter-spacing: -.01em; color: var(--nasa-blue-900); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .brand-text span {
-  font-size: 10px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase;
-  color: #a8c2ea; white-space: nowrap;
+  font-size: var(--label); line-height: 16px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--muted); white-space: nowrap;
 }
 html[dir="rtl"] .brand-text span { letter-spacing: 0; }
 
-.badges { display: flex; gap: 6px; }
+/* primary navigation: segmented instrument switch */
+.nav { display: flex; gap: 2px; padding: 3px; margin-inline-start: 12px; background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-md); }
+.nav a {
+  display: inline-flex; align-items: center; height: 32px; padding: 0 16px; border-radius: var(--r-sm);
+  font-size: 13px; font-weight: 600; letter-spacing: .02em; text-decoration: none; color: var(--ink-2);
+}
+.nav a:hover { background: var(--surface); color: var(--nasa-blue); }
+.nav a[aria-current="page"] { background: var(--nasa-blue); color: #fff; }
+
+.badges { display: flex; gap: 6px; flex: 0 1 auto; min-width: 0; overflow: hidden; }
 .badge {
-  display: inline-flex; align-items: center; gap: 5px; white-space: nowrap;
-  font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
-  padding: 4px 8px; border-radius: var(--r-pill);
+  display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+  font-size: var(--label); font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+  padding: 5px 9px; border-radius: var(--r-sm); border: 1px solid var(--line);
+  background: var(--paper); color: var(--ink-2);
 }
 .badge .icon { width: 13px; height: 13px; }
-.badge.demo { background: #ffd166; color: #4a3200; }
-.badge.offline { background: #cbd5e1; color: #1e293b; }
+.badge.demo { background: #fff6e0; border-color: #f2dfae; color: #6b4e09; }
+.badge.offline { background: var(--paper); color: var(--muted); }
 
 .toolbar { margin-inline-start: auto; display: flex; align-items: center; gap: 8px; min-width: 0; flex: 0 0 auto; }
-.badges { flex: 0 1 auto; min-width: 0; overflow: hidden; }
 .field {
-  display: flex; align-items: center; gap: 6px; height: 34px; padding: 0 8px; min-width: 0;
-  background: rgba(255, 255, 255, .13); border: 1px solid rgba(255, 255, 255, .2);
-  border-radius: var(--r-sm); color: #e8eefb;
+  display: flex; align-items: center; gap: 7px; height: 36px; padding: 0 10px; min-width: 0;
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r-md); color: var(--ink-2);
 }
-.field .icon { opacity: .9; }
+.field:focus-within { border-color: var(--nasa-blue); }
+.field .icon { color: var(--nasa-blue); }
 .field select {
-  background: none; border: 0; color: #fff; font-size: 13px; font-weight: 500;
-  max-width: 168px; min-width: 0; padding: 0 2px; cursor: pointer;
+  background: none; border: 0; color: var(--ink); font-size: 13px; font-weight: 500;
+  max-width: 190px; min-width: 0; padding: 0 2px; cursor: pointer; font-variant-numeric: tabular-nums;
 }
-.field select option { color: var(--ink); }
+.field select:focus { outline: none; }
 .field .play {
-  display: grid; place-items: center; width: 24px; height: 24px; margin-inline-start: 2px;
-  border: 0; border-radius: 5px; background: rgba(255, 255, 255, .16); color: #fff; cursor: pointer;
+  display: grid; place-items: center; width: 26px; height: 26px; margin-inline-start: 2px;
+  border: 0; border-radius: var(--r-sm); background: var(--nasa-blue); color: #fff; cursor: pointer;
 }
-.field .play:hover { background: rgba(255, 255, 255, .3); }
+.field .play .icon { color: #fff; }
+.field .play:hover { background: var(--nasa-blue-700); }
 .field .play.on { background: var(--nasa-red); }
 .tool-link {
-  display: inline-flex; align-items: center; gap: 7px; height: 34px; padding: 0 11px;
-  border-radius: var(--r-sm); color: #fff; text-decoration: none; font-size: 13px; font-weight: 550;
-  border: 1px solid transparent;
+  display: inline-flex; align-items: center; gap: 7px; height: 36px; padding: 0 12px;
+  border-radius: var(--r-md); color: var(--ink); text-decoration: none; font-size: 13px; font-weight: 600;
+  border: 1px solid var(--line); background: var(--surface);
 }
-.tool-link:hover { background: rgba(255, 255, 255, .14); }
-.tool-link.ghost { border-color: rgba(255, 255, 255, .28); }
+.tool-link:hover { background: var(--paper); }
+.tool-link.ghost { border-color: var(--line); }
 
 /* ---------------------------------------------------------------- stage */
 .stage { position: relative; flex: 1; min-height: 0; display: flex; overflow: hidden; }
-#map { flex: 1; min-width: 0; background: #e8edf3; }
-.leaflet-container { font: inherit; background: #e8edf3; }
+#map {
+  flex: 1; min-width: 0; background-color: #e3e8f0;
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+.leaflet-container { font: inherit; background: transparent; }
 .leaflet-tooltip {
   font: 500 13px/1.35 var(--sans); padding: 6px 9px; border: 1px solid var(--line);
   border-radius: var(--r-sm); box-shadow: var(--shadow-1); color: var(--ink);
