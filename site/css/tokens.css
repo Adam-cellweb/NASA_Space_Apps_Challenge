@@ -35,6 +35,16 @@
   --panel-w: 416px;
   --shadow-1: 0 1px 3px rgba(6, 31, 77, .08), 0 8px 16px -4px rgba(6, 31, 77, .06);
   --shadow-2: 0 1px 3px rgba(6, 31, 77, .08), 0 8px 16px -4px rgba(6, 31, 77, .06);
+  /* NASA chrome: the header and footer are deep space, the content stays white
+     so measurements remain legible. Red is reserved for the keyline and alerts. */
+  --chrome: #061634;
+  --chrome-2: #0b3d91;
+  --on-chrome: #ffffff;
+  --on-chrome-2: rgba(255, 255, 255, .78);
+  --on-chrome-line: rgba(255, 255, 255, .18);
+  --on-chrome-fill: rgba(255, 255, 255, .09);
+  --on-chrome-fill-2: rgba(255, 255, 255, .16);
+
   --hud: rgba(6, 31, 77, .9);
   --grid: rgba(11, 61, 145, .07);
   --focus: 0 0 0 2px var(--surface), 0 0 0 4px var(--nasa-blue);

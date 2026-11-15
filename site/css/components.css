@@ -136,13 +136,13 @@ html[dir="rtl"] .list .go { transform: scaleX(-1); }
 /* ---------------------------------------------------------------- footer */
 .foot {
   height: var(--footer-h); flex: none; display: flex; align-items: center; gap: 14px;
-  padding: 0 14px; font-size: 11px; color: var(--muted); background: var(--surface);
-  border-top: 1px solid var(--line); white-space: nowrap; overflow: hidden;
+  padding: 0 14px; font-size: 11px; color: var(--on-chrome-2); background: var(--chrome);
+  border-top: 2px solid var(--nasa-red); white-space: nowrap; overflow: hidden;
 }
 .foot span { overflow: hidden; text-overflow: ellipsis; }
-.foot .sep { color: var(--line); }
-.foot a { color: var(--muted); display: inline-flex; align-items: center; gap: 4px; }
-.foot a:hover { color: var(--nasa-blue); }
+.foot .sep { color: var(--on-chrome-line); }
+.foot a { color: var(--on-chrome-2); display: inline-flex; align-items: center; gap: 4px; }
+.foot a:hover { color: var(--on-chrome); }
 
 /* ---------------------------------------------------------------- doc pages */
 .doc-wrap { flex: 1; overflow-y: auto; background: var(--paper); }
@@ -258,3 +258,29 @@ html[dir="rtl"] .hud { left: auto; right: 14px; letter-spacing: 0; }
   border: 1px solid #0a3278; backdrop-filter: blur(8px); font-variant-numeric: tabular-nums;
 }
 .hud span:last-child { background: rgba(255, 255, 255, .92); color: var(--ink-2); border-color: var(--line); }
+
+
+/* ---------------------------------------------------------------- NASA type details
+   Small uppercase labels behind a red tick, the way NASA sets section headings on
+   technical pages. Applied through the existing tokens; no new colours. */
+.panel h2 {
+  position: relative; padding-inline-start: 11px;
+  letter-spacing: .09em;
+}
+.panel h2::before {
+  content: ""; position: absolute; inset-inline-start: 0; top: 50%; transform: translateY(-50%);
+  width: 3px; height: 13px; background: var(--nasa-red); border-radius: 1px;
+}
+html[dir="rtl"] .panel h2 { letter-spacing: 0; }
+
+/* measured values read as instrument output */
+.status-big .v, .stat .v, .balance .v { font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+.stat .k, .balance .k { text-transform: uppercase; letter-spacing: .07em; font-size: var(--label); font-weight: 600; }
+html[dir="rtl"] .stat .k, html[dir="rtl"] .balance .k { letter-spacing: 0; }
+
+/* the deficit headline is the one number that matters, so give it room */
+.status-big .v { font-size: 40px; line-height: 1; }
+.status-card { border-inline-start: 2px solid var(--line); }
+.status-card.green { border-inline-start-color: var(--green); }
+.status-card.amber { border-inline-start-color: var(--amber); }
+.status-card.red { border-inline-start-color: var(--red); }

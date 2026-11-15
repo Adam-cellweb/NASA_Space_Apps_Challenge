@@ -681,7 +681,7 @@
   }
   function statusCard(cur, p) {
     var st = cur.status || 'nodata';
-    var card = el('div', { 'class': 'status-card' });
+    var card = el('div', { 'class': 'status-card ' + st });
     card.appendChild(el('div', { 'class': 'status-bar ' + st }));
     var body = el('div', { 'class': 'status-body' });
     body.appendChild(el('span', { 'class': 'status-tag ' + st }, [

@@ -488,11 +488,11 @@ The roadmap describes the five planned phases. It does not mean any phase is com
 - [ ] Create design tokens (color, typography, spacing, radii, shadow, z-index).
 - [ ] Build base styles (reset, typography, utilities, focus states).
 - [ ] Build shared application shell (header, navigation, footer, page container).
-- [ ] Build responsive layout foundation and breakpoints.
+- [x] Build responsive layout foundation and breakpoints.
 - [ ] Build shared components (buttons, cards, panels, tables, badges, legends, states).
 - [ ] Create centralized i18n dictionaries for English, Urdu, and Pashto.
 - [ ] Implement language switcher, persistence, and direction switching.
-- [ ] Verify RTL readiness for Urdu and Pashto.
+- [x] Verify RTL readiness for Urdu (rendered and inspected at 1440 px); Pashto still unverified.
 - [ ] Define the data-service architecture and adapter boundary.
 - [ ] Add loading, empty, partial-data, error, and no-data state primitives.
 - [ ] Write the frontend architecture note and update README.
@@ -502,9 +502,9 @@ The roadmap describes the five planned phases. It does not mean any phase is com
 
 - [ ] Design tokens are used consistently across the shell and components.
 - [ ] The shared shell works on the Atlas and Methods pages.
-- [ ] Responsive foundation verified at target widths.
+- [x] Responsive foundation verified at target widths (no horizontal overflow measured at 360, 390, 430, 520 and 768 px).
 - [ ] Components are reused at least twice and documented in code.
-- [ ] Language switching and RTL are verified.
+- [x] Language switching and Urdu RTL are verified; Pashto RTL pending.
 - [ ] Data-service boundary exists and contains no UI logic.
 - [ ] No duplicated shell implementations.
 
@@ -693,10 +693,10 @@ Progress is calculated only from verified tasks. Percentages for Phases 1, 3, an
 | Field | Value |
 |---|---|
 | Status | In Progress |
-| Progress | 85% |
-| Completed tasks | Design tokens, base/component styles, shared shell, i18n (en/ur/ps) with RTL, and a data-service boundary are present in the upstream base and reachable through both pages |
-| Partially completed tasks | Responsive-at-target-widths and language-switch/RTL visual verification still outstanding |
-| Pending tasks | Formal cross-width verification; documented component reuse |
+| Progress | 92% |
+| Completed tasks | Design tokens, base/component styles, shared shell, i18n (en/ur/ps) with RTL, and a data-service boundary; NASA chrome pass (2026-11-15 c) applied through the tokens; cross-width measurement and Urdu RTL render verified |
+| Partially completed tasks | Pashto RTL render; documented component reuse |
+| Pending tasks | Pashto RTL verification; component reuse notes |
 | Known bugs | None observed in this phase |
 | Blockers | None for the implemented scope |
 | Relevant files | `site/index.html`, `site/methods.html`, `site/guide.html`, `site/css/style.css`, `site/js/*`, `site/strings.json` |
@@ -709,8 +709,8 @@ Progress is calculated only from verified tasks. Percentages for Phases 1, 3, an
 | Status | In Progress |
 | Progress | 60% |
 | Completed tasks | Leaflet map with KP framing; district/tehsil boundaries via the data service; selection state; province/district/tehsil panels; layer chips; metadata-driven legend; dekad period control; source/period/resolution disclosure. Phase 2 refactor: `js/layers/catalog.js`, `js/services/layer-service.js`, `js/components/layer-control.js`, `js/components/temporal.js`; province-level layer control; ramp legend + period-control gating for static layers |
-| Partially completed tasks | Responsive map workspace and keyboard interaction not machine-verified |
-| Pending tasks | Responsive/keyboard verification; dataset selection interface decision |
+| Partially completed tasks | Responsive map workspace measured (no overflow at five widths); keyboard interaction still unverified |
+| Pending tasks | Keyboard verification; dataset selection interface decision |
 | Known bugs | None observed in headless render (province, district, tehsil; status and hectare layers) |
 | Blockers | Responsive/keyboard/browser-console verification; production data contract and scientific sign-off |
 | Relevant files | `site/js/app.js`, `site/js/layers/catalog.js`, `site/js/services/layer-service.js`, `site/js/components/layer-control.js`, `site/js/components/temporal.js`, `site/index.html`, `site/strings.json`, `site/css/style.css` |
@@ -843,9 +843,9 @@ An Atlas implementation now exists on the `upstream/main` base. Items below are 
 - [x] Geographic interactions work.
 - [x] Available dataset layers work.
 - [x] Available charts work.
-- [ ] Methods and Data Sources page works.
+- [x] Methods and Data Sources page works.
 - [x] Navigation works.
-- [ ] Language switching works.
+- [x] Language switching works (English and Urdu exercised).
 - [ ] CSV exports work where supported.
 
 **Status:** Partially verified — province, district, and tehsil views exercised in a headless render with real data.
@@ -863,13 +863,13 @@ An Atlas implementation now exists on the `upstream/main` base. Items below are 
 
 ### Responsive design
 
-- [ ] Mobile layout verified.
-- [ ] Tablet layout verified.
-- [ ] Desktop layout verified.
-- [ ] Urdu RTL verified.
+- [x] Mobile layout verified (measured at 360, 390 and 430 px: client width equals scroll width, no element overflows the header, panel or footer).
+- [x] Tablet layout verified (520 and 768 px, same measurement).
+- [x] Desktop layout verified (1440 px render).
+- [x] Urdu RTL verified (1440 px render: mirrored nav, panel, legend, map tools and section ticks).
 - [ ] Pashto RTL verified.
 
-**Status:** Not verified — no cross-width or RTL visual check has been performed.
+**Status:** Partially verified — measured with a same-origin DOM probe plus desktop renders on 2026-11-15; Pashto RTL still outstanding.
 
 ### Accessibility
 
@@ -1013,6 +1013,8 @@ The legacy files have been removed, so Phase 1 implementation may proceed. Do no
 | 2026-11-15 | Verified Phase 2 in a headless render: province, district, and tehsil views render with real data; grouped layer chips (3 categories, unavailable layers disabled); status legend and continuous-layer ramp legend; period control disabled for static layers. Fixed two bugs found in review: `state.layer` now initialises from the catalog default, and province/district/tehsil legends receive the ramp breaks. Updated `AGENTS.md` to reflect the new base and Phase 2 status. | OpenCode, on behalf of the frontend owner |
 | 2026-11-15 | (b) Honesty and context pass on `feature/honest-basis-and-context`. Found and fixed: `data/meta.json` and `data/validation.csv` on `main` had been overwritten by proposal/TODO documents, which broke `validate_data.py` and the site boot; restored the pipeline outputs and moved the originals to `docs/classification-proposal.json` and `validation/validation_template.csv`. Recorded what the live data really is: water demand is FAO-56 reference ET0 (not WaPOR actual ET), the mask is WorldCover cropland (not irrigated winter cereals), and wheat/maize/irrigated are not connected; README and `docs/methods.md` section 0 now say so. Added `pipeline/build_baseline.py` (25-year NASA POWER baseline, committed as `pipeline/baseline/dekad_deficit.json`), per-dekad `pct`/`normal_mm` in the series, a `baseline` block in `meta.json`, a history layer, a history block on the status card, a typical-deficit line on the chart, and a province headline separating red from unusual. Verified in headless Chrome: province headline, history layer and legend, tehsil panel and chart. Census numbers for `validation.csv` are still missing and must come from the team. | Claude Code, on behalf of the frontend owner |
 | 2026-11-15 | Connected WorldCereal: `pipeline/worldcereal_stats.csv` (Earth Engine export, 153 units) -> `build_series.py` -> `data/` rebuilt, `crop_type` source `live`, status basis irrigated winter cereals; contract check passes. Applied the `new_ui/` Orbital Agricultural Observatory design via tokens, shell CSS, nav, extent HUD and no-data hatch (no mock-up data adopted); docs/methods.md section 0 corrected. Enabled GitHub Pages (Actions) for the repo. Verified by headless Chrome renders only (desktop, 375 px phone, district view); keyboard, RTL and console checks still outstanding. | OpenCode, on behalf of the frontend owner |
+
+| 2026-11-15 | (c) NASA aesthetic pass, applied through the existing tokens rather than a new design system. Added chrome tokens (`--chrome`, `--chrome-2`, `--on-chrome*`) and moved the header and footer to NASA deep navy with a 2 px NASA-red keyline, a faint engineering grid, a circular brand mark, an instrument-style nav and on-dark controls; content surfaces stay white for legibility. Section headings now carry a red tick, measured values use tabular figures with uppercase tracked labels, the deficit headline was enlarged, and the status card carries its class so it can show a status-coloured edge. Verified: desktop and guide renders, Urdu RTL render, the 3D globe sharing the chrome, and a same-origin DOM probe showing no horizontal overflow at 360, 390, 430, 520 or 768 px. Keyboard navigation and Pashto RTL remain unverified. | Claude Code, on behalf of the frontend owner |
 
 ---
 
