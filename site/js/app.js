@@ -30,7 +30,7 @@
   function t(key, vars) { return i18n.t(key, vars); }
   function nameOf(p) { return i18n.name(p); }
 
-  var meta = null, districts = null;
+  var meta = null, districts = null, matrix = null;  // matrix.json: all units x six periods
   var map, districtLayer = null, ucLayer = null, plotlyPromise = null, firstFit = true;
   var baseLayers = {}, labelOverlay = null, activeBase = localStorage.getItem('atlas.base') || 'light';
   var showLabels = localStorage.getItem('atlas.labels') !== 'off';
